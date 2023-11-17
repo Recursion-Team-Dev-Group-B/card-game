@@ -1,0 +1,36 @@
+{
+  "name": "card-game",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "repository": "git@github.com:Recursion-Team-Dev-Group-B/card-game.git",
+  "author": "totot1010",
+  "license": "MIT",
+  "scripts": {
+    "dev": "webpack --mode development && webpack-dev-server --mode development",
+    "build": "webpack --mode production && webpack-dev-server --mode production"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.1",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
+    "autoprefixer": "^10.4.16",
+    "css-loader": "^6.8.1",
+    "eslint": "^8.53.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "html-webpack-plugin": "^5.5.3",
+    "postcss": "^8.4.31",
+    "postcss-loader": "^7.3.3",
+    "prettier": "^3.1.0",
+    "style-loader": "^3.3.3",
+    "tailwindcss": "^3.3.5",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.2.2",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "phaser": "^3.70.0"
+  }
+}
