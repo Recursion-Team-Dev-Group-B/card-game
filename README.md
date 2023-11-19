@@ -4,6 +4,10 @@
 ```bash
 mkdir -p ~/recursion
 cd ~/recursion
+# HTTPSもしくはSShでclose
+# HTTPS
+https://github.com/Recursion-Team-Dev-Group-B/card-game.git
+# SSH
 git clone git@github.com:Recursion-Team-Dev-Group-B/card-game.git
 cd ~/recursion/card-game
 ```
@@ -23,6 +27,7 @@ docker compose up -d
 # コンテナに入る
 docker exec -it card-game bash
 # サーバー起動
+npm install
 npm run dev
 ```
 

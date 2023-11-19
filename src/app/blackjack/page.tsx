@@ -1,19 +1,21 @@
 'use client';
 import { useEffect, useState } from 'react';
-import * as Phaser from 'phaser';
-import { MyScene } from '../../index';
+import dynamic from 'next/dynamic';
+const DynamicComponentWithNoSSR = dynamic(() => import('@/components/index'), {
+  ssr: false,
+});
 
 const Page = () => {
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    const config: Phaser.Types.Core.GameConfig = {
-      width: 800,
-      height: 600,
-      parent: 'game-app', // #game-app内にcanvasを生成
-      scene: MyScene,
-    };
-    const blackjackGame = new Phaser.Game(config);
+    setLoading(true);
   }, []);
-  return <div id="game-app">Blackjack</div>;
+  return (
+    <div>
+      <div id="game-app"></div>
+      {loading ? <DynamicComponentWithNoSSR /> : null}
+    </div>
+  );
 };
 
 export default Page;
