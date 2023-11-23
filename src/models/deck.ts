@@ -1,11 +1,12 @@
 /* eslint no-underscore-dangle: 0 */
+import Phaser from 'phaser';
 import GAME from '../constants/game';
 import Card from './card';
 
-export default class Deck {
-  protected cardList: Array<Card> = [];
+class Deck {
+  cardList: Array<Card> = [];
 
-  constructor() {
+  constructor(scene: Phaser.Scene) {
     // suitListを作り、GAME.CARD.SUIT_LISTの中身をコピー
     const suitList: Array<string> = [...GAME.CARD.SUIT_LIST];
     // rankListを作り、GAME.CARD.RANK_LISTの中身をコピー
@@ -14,7 +15,7 @@ export default class Deck {
     // suitとrankの組み合わせを全て作り、cardListに格納。
     for (let s = 0; s < suitList.length; s += 1) {
       for (let r = 0; r < rankList.length; r += 1) {
-        this.cardList.push(new Card(suitList[s], rankList[r]));
+        this.cardList.push(new Card(scene, suitList[s], rankList[r]));
       }
     }
   }
@@ -50,3 +51,5 @@ export default class Deck {
     return this.cardList.length;
   }
 }
+
+export default Deck;

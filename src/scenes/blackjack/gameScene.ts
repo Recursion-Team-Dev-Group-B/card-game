@@ -1,54 +1,102 @@
+'use client';
+import { useState } from 'react';
 import * as Phaser from 'phaser';
+import Deck from '@/models/deck';
 import Zone = Phaser.GameObjects.Zone;
+import Image = Phaser.GameObjects.Image;
 
 const GameScene = () => {
+  const [config, setConfig] = useState<Phaser.Types.Core.GameConfig>();
   const loadGame = async () => {
     class BlackjackScene extends Phaser.Scene {
-      protected gameZone: Zone | undefined;
+      tableImage: Image | undefined;
 
       constructor() {
         super('blackjackGame');
       }
 
       preload() {
-        // アセット読み込み
-        this.load.image('street', '/assets/street.png');
-        this.load.image('robot', '/assets/robot.png');
+        // テーブル画像をロード
+        this.load.image('table', '/game/blackjack/table.png');
       }
 
       create() {
-        this.createGameZone();
-        this.add.image(0, 0, this.bgKey).setOrigin(0);
+        const deck = new Deck(this.sys.scene);
+
+        const gameZone = this.createGameZone();
+        // Zoneをクリックできるように設定
+        gameZone.setInteractive({
+          useHandCursor: true, // マウスオーバーでカーソルが指マークになる
+        });
+        // ZoneをクリックしたらMainSceneに遷移
+        gameZone.on('pointerdown', () => {
+          console.log('aa');
+        });
+
+        // トランプカードを仮で配置
+        // 画像をシーンに追加
+        deck.shuffle();
+        const firstCard = deck.cardList[0];
+        const secondCard = deck.cardList[1];
+        console.log(firstCard);
+        console.log(secondCard);
+        Phaser.Display.Align.In.Center(
+          firstCard as Phaser.GameObjects.GameObject,
+          this.add.zone(400, 400, 100, 100),
+        );
+
+        // this.tableImage = this.add.image(0, 0, 'table').setOrigin(0);
+        // console.log('tableimage', this.tableImage);
+        // this.resizeImage();
 
         // 画面中央に画像とテキストを配置
-        this.add.image(400, 300, 'street');
-        this.add.image(400, 300, 'robot');
-        this.add
-          .text(400, 300, 'Hello World', {
-            fontFamily: 'arial',
-            fontSize: '60px',
-          })
-          .setOrigin(0.5);
         this.load.start();
       }
 
-      createGameZone(): void {
-        this.gameZone = this.add.zone(800, 800, 800, 800);
+      // GameZoneを作成
+      createGameZone(): Zone {
+        const width = Number(this.sys.game.config.width);
+        const height = Number(this.sys.game.config.height);
+
+        const gameZone = this.add.zone(
+          width * 0.5,
+          height * 0.5,
+          width,
+          height,
+        );
+        return gameZone;
+      }
+
+      // 画像のサイズを調整
+      // Todo 画面の大きさに合わせて画像を表示する
+      resizeImage() {
+        const width: number = Number(this.sys.game.config.width);
+        const height: number = Number(this.sys.game.config.height);
+
+        // 画像のスケーリング方法をここで定義
+        // 例: 画面幅に合わせてスケールを調整
+        if (this.tableImage) {
+          const scale: number = width / this.tableImage.width;
+          this.tableImage.setScale(scale);
+          this.scale.resize(width, height);
+        }
       }
     }
 
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      width: 800,
-      height: 600,
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH,
       parent: 'blackjackGame', // #blackjackGame内にcanvasを生成
       scene: [BlackjackScene],
     };
-
-    new Phaser.Game(config);
+    setConfig(config);
+    const game = new Phaser.Game(config);
   };
 
-  loadGame();
+  if (!config) {
+    loadGame();
+  }
 
   return null;
 };
