@@ -1,9 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-const DynamicComponentWithNoSSR = dynamic(() => import('@/components/index'), {
-  ssr: false,
-});
+const DynamicComponentWithNoSSR = dynamic(
+  () => import('@/scenes/blackjack/gameScene'),
+  {
+    ssr: false,
+  },
+);
 
 const Page = () => {
   const [loading, setLoading] = useState(false);
@@ -12,7 +15,7 @@ const Page = () => {
   }, []);
   return (
     <div>
-      <div id="game-app"></div>
+      <div id="blackjackGame"></div>
       {loading ? <DynamicComponentWithNoSSR /> : null}
     </div>
   );
