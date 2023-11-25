@@ -3,13 +3,21 @@ class Card extends Phaser.GameObjects.Image {
   // カードはsuit（スペード、ハート、ダイヤモンド、クラブ）、rank（A、2-10、JQK）、裏表のプロパティを持つものとする。
   readonly #suit: string;
   readonly #rank: string;
+  #texture: string;
   #faceDown = false;
 
-  constructor(scene: Phaser.Scene, suit: string, rank: string) {
-    super(scene, 100, 100, 'card');
+  constructor(
+    scene: Phaser.Scene,
+    suit: string,
+    rank: string,
+    texture: string,
+  ) {
+    super(scene, 10, 10, texture);
+    // scene.add.existing(this);
     this.scene = scene;
     this.#suit = suit;
     this.#rank = rank;
+    this.#texture = texture;
   }
 
   // suitのgetter

@@ -15,7 +15,14 @@ class Deck {
     // suitとrankの組み合わせを全て作り、cardListに格納。
     for (let s = 0; s < suitList.length; s += 1) {
       for (let r = 0; r < rankList.length; r += 1) {
-        this.cardList.push(new Card(scene, suitList[s], rankList[r]));
+        this.cardList.push(
+          new Card(
+            scene,
+            suitList[s],
+            rankList[r],
+            `${suitList[s]}_${rankList[r]}`,
+          ),
+        );
       }
     }
   }
