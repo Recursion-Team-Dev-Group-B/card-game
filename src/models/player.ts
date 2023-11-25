@@ -1,55 +1,109 @@
-export default class Player {
-  // プレイヤーが持っているカードを表す配列
-  #hand: any; // Todo Card[] タイプ作成
-  // プレイヤーが賭けているチップ数
-  #bet: number;
-  // プレイヤーがどのタイプに属するか
-  readonly #playerType: 'player' | 'house' | 'cpu';
+import Card from './card';
 
-  constructor(playerType: 'player' | 'house' | 'cpu', hand: any, bet: number) {
-    this.#playerType = playerType;
-    this.#hand = hand;
-    this.#bet = bet;
+export abstract class Player {
+  private name: string;
+  private playerType: string;
+  private gameType: string;
+  private chips: number;
+  private winAmount: number;
+  private bet: number;
+  private action: string;
+  private hand: Array<Card> = [];
+
+  /*
+        name: プレイヤーの名前
+        playerType: プレイヤーのタイプ　[player, house, cpu]のいずれか
+        gameType: プレイヤーが遊ぶゲーム [blackJack, poker, war, speed]
+        chips:　プレイヤーのチップの数, 初期値: 1000
+        winAmount: プレイヤーが買った場合に支払われる賞金
+        bet: プレイヤーの掛け金
+        aciton: 各ゲームにおいてプレイヤーが選択した行動
+                blackJackの場合: [hit, bust, stand, blackjack, surrender ]
+    */
+
+  constructor(
+    name: string,
+    playerType: string,
+    gameType: string,
+    chips: number = 1000,
+    winAmount: number,
+    bet: number,
+    aciton: string,
+  ) {
+    this.name = name;
+    this.playerType = playerType;
+    this.gameType = gameType;
+    this.chips = chips;
+    this.winAmount = winAmount;
+    this.bet = bet;
+    this.action = aciton;
   }
 
-  // handのgetter
-  get hand(): string {
-    return this.#hand;
+  // プレイヤーの名前を取得
+  get getName(): string {
+    return this.getName;
   }
 
-  // betのgetter
-  get bet(): number {
-    return this.#bet;
+  // プレイヤーのタイプを取得
+  get getPlayerType(): string {
+    return this.playerType;
   }
 
-  // playerTypeのgetter
-  get playerType(): 'player' | 'house' | 'cpu' {
-    return this.#playerType;
+  // プレイヤーが選択したゲームを取得
+  get getGameType(): string {
+    return this.gameType;
   }
 
-  // カードのUI実装。
-  // 裏向きでなければ、そのsuit-rankに紐づくカードの画像を返す
-  getAtlasFrame(): string {
-    return !this.#faceDown ? `card-${this.#suit}-${this.#rank}.png` : '';
+  //　プレイヤーが持っているチップを取得
+  get getChips(): number {
+    return this.chips;
+  }
+  // プレイヤーのチップを設定する
+  set setChips(chips: number) {
+    this.chips = chips;
+  }
+  // プレイヤーがベットした金額を取得する
+  get getBet(): number {
+    return this.bet;
+  }
+  // プレイヤーがベットした金額を設定する
+  set setBet(bet: number) {
+    this.bet = bet;
   }
 
-  // rankに対応する数値を取得。
-  getRankNumber(): number {
-    const rankToNum: { [key: string]: number } = {
-      A: 1,
-      '2': 2,
-      '3': 3,
-      '4': 4,
-      '5': 5,
-      '6': 6,
-      '7': 7,
-      '8': 8,
-      '9': 9,
-      '10': 10,
-      J: 11,
-      Q: 12,
-      K: 13,
-    };
-    return rankToNum[this.#rank] ?? 0; // if rankToNum[this.rank] is undefined, this function returns 0
+  // プレイヤーが獲得した賞金を取得
+  get getWinAmount(): number {
+    return this.winAmount;
   }
+
+  // プレイヤーが獲得した賞金を設定する
+  set setWinAmount(winAmount: number) {
+    this.winAmount = winAmount;
+  }
+
+  // プレイヤーが選択したアクションを取得
+  get getAction(): string {
+    return this.action;
+  }
+
+  // プレイヤーが選択したアクションを設定
+  set setAction(aciton: string) {
+    this.action = aciton;
+  }
+
+  // 手札を空にする
+  clearHand() {
+    this.hand = [];
+  }
+
+  // 手札にカードを加える
+  addCardToHand(card: Card) {
+    this.hand.push(card);
+  }
+
+  /*
+        promptPlayer() {} 
+
+        getHandScore() {}
+    */
 }
