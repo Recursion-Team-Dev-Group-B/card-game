@@ -22,15 +22,15 @@ const GAME = {
     LOSS_GAME_SOUND_KEY: 'lossGame',
     BUTTON_CLICK_SOUND_KEY: 'buttonClick',
     CHIP_CLICK_SOUND_KEY: 'chipClick',
-    ERROR_SOUND_KEY: 'error'
+    ERROR_SOUND_KEY: 'error',
   },
   // プレイヤーはそのまま
   PLAYER: {
-    CHIPS: 1000
+    CHIPS: 1000,
   },
   CARD: {
-    SUIT_CHOICES: ['Spades', 'Clubs', 'Hearts', 'Diamonds'],
-    RANK_CHOICES: [
+    SUIT_LIST: ['Spades', 'Clubs', 'Hearts', 'Diamonds'],
+    RANK_LIST: [
       'A',
       '2',
       '3',
@@ -43,7 +43,7 @@ const GAME = {
       '10',
       'J',
       'Q',
-      'K'
+      'K',
     ],
     WIDTH: 140,
     HEIGHT: 190,
@@ -51,14 +51,14 @@ const GAME = {
     ATLAS_KEY: 'cards',
     BACK_KEY: 'cardBack',
     FLIP_OVER_SOUND_KEY: 'flipOverCard',
-    PUT_DOWN_SOUND_KEY: 'putDownCard'
+    PUT_DOWN_SOUND_KEY: 'putDownCard',
   },
   DECK: {
-    POKER_HEIGHT: 600
+    POKER_HEIGHT: 600,
   },
   // 画像のパスは後で変更する
   COMMON_IMG_ASSETS_PATH: '/game_assets/common/images',
-  COMMON_SOUND_ASSETS_PATH: '/game_assets/common/sounds'
+  COMMON_SOUND_ASSETS_PATH: '/game_assets/common/sounds',
 } as const;
 
 export default GAME;

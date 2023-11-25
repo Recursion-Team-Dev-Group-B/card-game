@@ -1,11 +1,13 @@
-export default class Card {
-
+import Phaser from 'phaser';
+class Card extends Phaser.GameObjects.Image {
   // カードはsuit（スペード、ハート、ダイヤモンド、クラブ）、rank（A、2-10、JQK）、裏表のプロパティを持つものとする。
   readonly #suit: string;
   readonly #rank: string;
   #faceDown = false;
 
-  constructor(suit: string, rank: string) {
+  constructor(scene: Phaser.Scene, suit: string, rank: string) {
+    super(scene, 100, 100, 'card');
+    this.scene = scene;
     this.#suit = suit;
     this.#rank = rank;
   }
@@ -33,9 +35,7 @@ export default class Card {
   // カードのUI実装。
   // 裏向きでなければ、そのsuit-rankに紐づくカードの画像を返す
   getAtlasFrame(): string {
-    return !this.#faceDown
-      ? `card-${this.#suit}-${this.#rank}.png`
-      : '';
+    return !this.#faceDown ? `card-${this.#suit}-${this.#rank}.png` : '';
   }
 
   // rankに対応する数値を取得。
@@ -53,8 +53,10 @@ export default class Card {
       '10': 10,
       J: 11,
       Q: 12,
-      K: 13
+      K: 13,
     };
     return rankToNum[this.#rank] ?? 0; // if rankToNum[this.rank] is undefined, this function returns 0
   }
 }
+
+export default Card;

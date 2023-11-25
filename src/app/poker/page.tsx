@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const DynamicComponentWithNoSSR = dynamic(
-  () => import('@/scenes/blackjack/gameScene'),
+  () => import('@/scenes/poker/gameScene'),
   {
     ssr: false,
   },
@@ -15,7 +15,7 @@ const Page = () => {
   }, []);
   return (
     <div>
-      <div id="blackjackGame"></div>
+      <div id="pokerGame"></div>
       {loading ? <DynamicComponentWithNoSSR /> : null}
     </div>
   );
