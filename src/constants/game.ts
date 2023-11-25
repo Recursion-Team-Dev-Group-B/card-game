@@ -29,7 +29,7 @@ const GAME = {
     CHIPS: 1000,
   },
   CARD: {
-    SUIT_LIST: ['Spades', 'Clubs', 'Hearts', 'Diamonds'],
+    SUIT_LIST: ['spade', 'club', 'heart', 'diamond'],
     RANK_LIST: [
       'A',
       '2',

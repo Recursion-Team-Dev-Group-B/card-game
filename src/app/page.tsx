@@ -7,6 +7,7 @@ export default function Home() {
         ホーム画面
       </div>
       <Link href="/blackjack">Blackjackで遊ぶ</Link>
+      <Link href="/war">Warで遊ぶ</Link>
     </main>
   );
 }
