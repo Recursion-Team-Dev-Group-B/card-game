@@ -1,8 +1,13 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import * as Phaser from 'phaser';
-import Deck from '@/models/deck';
+import Deck from '@/models/common/deck';
+import Card from '@/models/common/card';
+import BlackjackPlayer from '@/models/blackjack/blackjackPlayer';
+
+import STYLE from '@/constants/style';
 import Zone = Phaser.GameObjects.Zone;
+import Text = Phaser.GameObjects.Text;
 import Image = Phaser.GameObjects.Image;
 
 const GameScene = () => {
@@ -10,6 +15,13 @@ const GameScene = () => {
   const loadGame = async () => {
     class BlackjackScene extends Phaser.Scene {
       tableImage: Image | undefined;
+      players: BlackjackPlayer[] = [];
+      deck: Deck | undefined;
+      gameZone: Zone | undefined;
+      handZones: Zone[] = [];
+      playerNames: Text[] = [];
+      width: number = 0;
+      height: number = 0;
 
       constructor() {
         super('blackjackGame');
@@ -18,6 +30,8 @@ const GameScene = () => {
       preload() {
         // テーブル画像をロード
         this.load.image('table', '/game/blackjack/table.png');
+        this.load.image('table1', '/game/blackjack/table1.png');
+        this.load.image('blackTable', '/game/blackjack/blackjackTable.jpg');
         this.load.image('club_A', '/game/common/images/cards/club_A.png');
         this.load.image('club_2', '/game/common/images/cards/club_2.png');
         this.load.image('club_3', '/game/common/images/cards/club_3.png');
@@ -66,34 +80,165 @@ const GameScene = () => {
         this.load.image('spade_J', '/game/common/images/cards/spade_J.png');
         this.load.image('spade_Q', '/game/common/images/cards/spade_Q.png');
         this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
+        this.load.image('back_card', '/game/common/images/cards/back_card.png');
       }
 
       create() {
-        const deck = new Deck(this.sys.scene);
+        this.initGame();
+        this.placeTableImage();
+        this.createGameZone();
+        this.createPlayerNameTexts();
+        this.createHandZones();
+        this.dealTwoCards();
 
-        // const gameZone = this.createGameZone();
-        // Zoneをクリックできるように設定
-        // gameZone.setInteractive({
-        //   useHandCursor: true, // マウスオーバーでカーソルが指マークになる
-        // });
-        // // ZoneをクリックしたらMainSceneに遷移
-        // gameZone.on('pointerdown', () => {
-        //   console.log('aa');
-        // });
+        // 画面中央に画像とテキストを配置
+        this.load.start();
+      }
 
-        // テーブルをシーンに追加
+      // ゲームが始まってから行う処理
+      // Todo BaseGameSceneなどに持たせる
+      initGame(): void {
+        this.width = Number(this.game.canvas.width);
+        this.height = Number(this.game.canvas.height);
+
+        // Blackjackプレイヤー作成
+        this.players = [
+          new BlackjackPlayer('player1', 'player', 'blackjack', 1000, 0, 100),
+          new BlackjackPlayer('house1', 'house', 'blackjack', 1000, 0, 100),
+        ];
+
+        // デッキ作成
+        this.deck = new Deck(this.sys.scene);
+        // シャッフル
+        this.deck.shuffle();
+      }
+
+      // Blackjackのテーブル画像を配置
+      placeTableImage(): void {
+        // スケールを計算（目的の横幅 / 元の画像の横幅）
         this.tableImage = this.add.image(0, 0, 'table').setOrigin(0);
-        // トランプカードを仮で配置
-        deck.shuffle();
-        const firstCard = deck.cardList[0]
-          .setDisplaySize(200, 200)
+        // スケールを計算（目的の横幅 / 元の画像の横幅）
+        const scale = this.width / this.tableImage.width;
+        // 計算したスケールを適用
+        this.tableImage.setScale(scale);
+      }
+
+      // GameZoneを作成
+      createGameZone(): void {
+        this.gameZone = this.add
+          .zone(0, 0, this.width, this.height)
+          .setOrigin(0);
+        // this.gameZone = this.add.zone(width * 0.5, height * 0.5, width, height);
+        // .setOrigin(0);
+
+        // のちのち returnの手前まで削除。
+        // Zoneがどの範囲か分かるように記載
+        // Graphics オブジェクトの作成
+        const graphics = this.add.graphics();
+        // 枠線のスタイルを設定
+        graphics.lineStyle(5, 0x00ff00, 1);
+        // Zone の位置とサイズに合わせて枠線を描画
+        graphics.strokeRect(
+          this.gameZone.x,
+          this.gameZone.y,
+          this.gameZone.width,
+          this.gameZone.height,
+        );
+      }
+
+      // プレイヤーの名前を作成
+      protected createPlayerNameTexts(): void {
+        this.playerNames = []; // 前回のゲームで作成したものが残っている可能性があるので、初期化する
+        this.players.forEach((player) => {
+          const playerNameText = this.add.text(
+            0,
+            300,
+            player.name,
+            STYLE.PLAYER_NAME,
+          );
+
+          if (player.playerType === 'player') {
+            Phaser.Display.Align.In.BottomCenter(
+              playerNameText as Text,
+              this.gameZone as Zone,
+              0,
+              -20,
+            );
+          } else if (player.playerType === 'house') {
+            Phaser.Display.Align.In.TopCenter(
+              playerNameText as Text,
+              this.gameZone as Zone,
+              0,
+              -20,
+            );
+          } else if (player.playerType === 'cpu') {
+            Phaser.Display.Align.In.TopCenter(
+              playerNameText as Text,
+              this.gameZone as Zone,
+              0,
+              -20,
+            );
+          }
+          this.playerNames.push(playerNameText);
+        });
+      }
+
+      protected createHandZones(): void {
+        this.handZones = []; // 前回のゲームで作成したものが残っている可能性があるので、初期化する
+        const cardWidth = 50;
+        const cardHeight = 100;
+        this.players.forEach((player, index) => {
+          const playerHandZone = this.add.zone(0, 0, cardWidth, cardHeight);
+
+          if (player.playerType === 'player') {
+            Phaser.Display.Align.To.TopCenter(
+              playerHandZone as Zone,
+              this.playerNames[index],
+              0,
+              STYLE.GUTTER_SIZE,
+            );
+          } else if (player.playerType === 'house') {
+            Phaser.Display.Align.To.BottomCenter(
+              playerHandZone as Zone,
+              this.playerNames[index],
+              0,
+              STYLE.GUTTER_SIZE,
+            );
+          } else if (player.playerType === 'cpu') {
+            Phaser.Display.Align.To.BottomCenter(
+              playerHandZone as Zone,
+              this.playerNames[index],
+              0,
+              STYLE.GUTTER_SIZE,
+            );
+          }
+          // aiが存在する場合は、個別に位置の設定が必要。
+          this.handZones.push(playerHandZone);
+        });
+      }
+
+      dealTwoCards(): void {
+        const player = this.players[0];
+        const playerHandZone = this.handZones[0];
+        const house = this.players[1];
+        const houseHandZone = this.handZones[1];
+
+        const firstCard = this.deck!.cardList[0].setDisplaySize(100, 120)
           .setX(100)
           .setY(100);
-        const secondCard = deck.cardList[1]
-          .setDisplaySize(200, 200)
+        const secondCard = this.deck!.cardList[1].setDisplaySize(100, 120)
           .setX(300)
           .setY(100);
-        console.log(deck.cardList);
+
+        // // タイマーイベントを作成
+        // this.time.addEvent({
+        //   delay: dealInterval,
+        //   callback: dealCard,
+        //   // loop: true,  // 繰り返し実行する場合はこの行を有効にする
+        //   repeat: 5, // 繰り返し回数（-1で無限に繰り返し）
+        // });
+
+        console.log(this.deck!.cardList);
         // console.log(firstCard);
         console.log(secondCard);
         this.add.existing(firstCard);
@@ -105,46 +250,39 @@ const GameScene = () => {
         // const clubImage = this.add.image(0, 0, 'club_A').setOrigin(0);
         // console.log('tableimage', this.tableImage);
         // this.resizeImage();
-
-        // 画面中央に画像とテキストを配置
-        this.load.start();
-      }
-
-      // GameZoneを作成
-      createGameZone(): Zone {
-        const width = Number(this.sys.game.config.width);
-        const height = Number(this.sys.game.config.height);
-
-        const gameZone = this.add.zone(
-          width * 0.5,
-          height * 0.5,
-          width,
-          height,
-        );
-        return gameZone;
-      }
-
-      // 画像のサイズを調整
-      // Todo 画面の大きさに合わせて画像を表示する
-      resizeImage() {
-        const width: number = Number(this.sys.game.config.width);
-        const height: number = Number(this.sys.game.config.height);
-
-        // 画像のスケーリング方法をここで定義
-        // 例: 画面幅に合わせてスケールを調整
-        if (this.tableImage) {
-          const scale: number = width / this.tableImage.width;
-          this.tableImage.setScale(scale);
-          this.scale.resize(width, height);
-        }
       }
     }
 
+    const MAX_SIZE_WIDTH_SCREEN = 1920;
+    const MAX_SIZE_HEIGHT_SCREEN = 1080;
+    const MIN_SIZE_WIDTH_SCREEN = 270;
+    const MIN_SIZE_HEIGHT_SCREEN = 480;
+    const SIZE_WIDTH_SCREEN = 540;
+    const SIZE_HEIGHT_SCREEN = 960;
+
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
-      mode: Phaser.Scale.FIT,
+      backgroundColor: '#000000',
       autoCenter: Phaser.Scale.CENTER_BOTH,
-      parent: 'blackjackGame', // #blackjackGame内にcanvasを生成
+      mode: Phaser.Scale.FIT,
+      // scale: {
+      //   parent: 'blackjackGame',
+      //   width: SIZE_WIDTH_SCREEN,
+      //   height: SIZE_HEIGHT_SCREEN,
+      //   min: {
+      //     width: MIN_SIZE_WIDTH_SCREEN,
+      //     height: MIN_SIZE_HEIGHT_SCREEN,
+      //   },
+      //   max: {
+      //     width: MAX_SIZE_WIDTH_SCREEN,
+      //     height: MAX_SIZE_HEIGHT_SCREEN,
+      //   },
+      // },
+      // width: window.innerWidth * window.devicePixelRatio,
+      // height: window.innerHeight * window.devicePixelRatio,
+      width: 1200,
+      height: 780,
+      parent: 'blackjackGame',
       scene: [BlackjackScene],
     };
     setConfig(config);
@@ -154,6 +292,9 @@ const GameScene = () => {
   if (!config) {
     loadGame();
   }
+  // useEffect(() => {
+  //   loadGame();
+  // }, []);
 
   return null;
 };
