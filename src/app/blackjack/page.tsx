@@ -15,8 +15,9 @@ const Page = () => {
   }, []);
   return (
     <div>
-      <div id="blackjackGame"></div>
-      {loading ? <DynamicComponentWithNoSSR /> : null}
+      <div id="blackjackGame">
+        {loading ? <DynamicComponentWithNoSSR /> : null}
+      </div>
     </div>
   );
 };
