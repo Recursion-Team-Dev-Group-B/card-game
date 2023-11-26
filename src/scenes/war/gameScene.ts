@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import * as Phaser from 'phaser';
-import Deck from '@/models/deck';
+import Deck from '@/models/common/deck';
 import Zone = Phaser.GameObjects.Zone;
 import Image = Phaser.GameObjects.Image;
 
