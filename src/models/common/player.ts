@@ -1,14 +1,15 @@
 import Card from './card';
 
+import Storage from '@/utils/storage';
+
 export abstract class Player {
+  public storage: Storage;
   public name: string;
   public readonly playerType: string;
   private gameType: string;
   private chips: number;
-  private winAmount: number;
-  private bet: number;
-  private action: string | undefined;
-  private hand: Array<Card> = [];
+  private bet: number | undefined;
+  hand: Array<Card> = [];
 
   /*
         name: プレイヤーの名前
@@ -21,22 +22,13 @@ export abstract class Player {
                 blackJackの場合: [hit, bust, stand, blackjack, surrender ]
     */
 
-  constructor(
-    name: string,
-    playerType: string,
-    gameType: string,
-    chips: number = 1000,
-    winAmount: number,
-    bet: number,
-    action?: string,
-  ) {
+  constructor(name: string, playerType: string, gameType: string) {
+    this.storage = new Storage();
+
     this.name = name;
     this.playerType = playerType;
     this.gameType = gameType;
-    this.chips = chips;
-    this.winAmount = winAmount;
-    this.bet = bet;
-    this.action = action;
+    this.chips = this.setChips();
   }
 
   // プレイヤーの名前を取得
@@ -58,12 +50,10 @@ export abstract class Player {
   get getChips(): number {
     return this.chips;
   }
-  // プレイヤーのチップを設定する
-  set setChips(chips: number) {
-    this.chips = chips;
-  }
+
   // プレイヤーがベットした金額を取得する
   get getBet(): number {
+    if (!this.bet) return 0;
     return this.bet;
   }
   // プレイヤーがベットした金額を設定する
@@ -96,14 +86,18 @@ export abstract class Player {
     this.hand = [];
   }
 
+  // プレイヤーのチップを設定する
+  // localStorageにチップがある場合はそのチップをセット
+  setChips() {
+    let chips = this.storage.get('chips');
+    if (!chips) {
+      chips = 1000;
+    }
+    return chips;
+  }
+
   // 手札にカードを加える
   addCardToHand(card: Card) {
     this.hand.push(card);
   }
-
-  /*
-        promptPlayer() {} 
-
-        getHandScore() {}
-    */
 }

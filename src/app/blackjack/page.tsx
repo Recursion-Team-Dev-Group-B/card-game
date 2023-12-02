@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import Storage from '@/utils/storage';
 const DynamicComponentWithNoSSR = dynamic(
   () => import('@/scenes/blackjack/gameScene'),
   {
@@ -8,10 +9,13 @@ const DynamicComponentWithNoSSR = dynamic(
   },
 );
 
+const storage = new Storage();
+
 const Page = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
+    storage.set('chips', 1000);
   }, []);
   return (
     <div>
