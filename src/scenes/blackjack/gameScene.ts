@@ -17,12 +17,12 @@ const GameScene = () => {
     class BlackjackScene extends BaseGameScene {
       tableImage: Image | undefined;
       players: BlackjackPlayer[] = [];
-      deck: Deck | undefined;
       gameZone: Zone | undefined;
       handZones: Zone[] = [];
       playerNames: Text[] = [];
       width: number = 0;
       height: number = 0;
+      playerScoreTexts: Text[] = [];
 
       constructor() {
         super('blackjackGame');
@@ -36,6 +36,7 @@ const GameScene = () => {
         super.create('blackjackGame');
         this.createPlayerNameTexts();
         this.createHandZones();
+        this.createPlayerScoreTexts();
         this.dealTwoCards();
         // this.displayPlayerScores();
 
@@ -123,61 +124,90 @@ const GameScene = () => {
         const house = this.players[1];
         const houseHandZone = this.handZones[1];
 
-        const firstCard = this.deck!.cardList[0].setDisplaySize(100, 120)
-          .setX(playerHandZone.x - 30)
-          .setY(playerHandZone.y);
-        const secondCard = this.deck!.cardList[1].setDisplaySize(100, 120)
-          .setX(playerHandZone.x)
-          .setY(playerHandZone.y);
+        this.time.delayedCall(300, () => {
+          this.dealCard(player, playerHandZone.x - 10, playerHandZone.y);
+        });
 
-        // // タイマーイベントを作成
-        // this.time.addEvent({
-        //   delay: dealInterval,
-        //   callback: dealCard,
-        //   // loop: true,  // 繰り返し実行する場合はこの行を有効にする
-        //   repeat: 5, // 繰り返し回数（-1で無限に繰り返し）
-        // });
+        this.time.delayedCall(600, () => {
+          this.dealCard(house, houseHandZone.x - 10, houseHandZone.y);
+        });
 
-        // console.log(this.deck!.cardList);
-        // console.log(secondCard);
-        this.add.existing(firstCard);
-        this.add.existing(secondCard);
-        // Phaser.Display.Align.In.Center(
-        //   firstCard as Phaser.GameObjects.GameObject,
-        //   this.add.zone(0, 0, 50, 50),
-        // );
-        // const clubImage = this.add.image(0, 0, 'club_A').setOrigin(0);
-        // console.log('tableimage', this.tableImage);
-        // this.resizeImage();
+        this.time.delayedCall(900, () => {
+          this.dealCard(player, playerHandZone.x + 10, playerHandZone.y);
+        });
+
+        this.time.delayedCall(1200, () => {
+          this.dealCard(house, houseHandZone.x + 10, houseHandZone.y, true);
+        });
+        this.displayCardsScore(true);
       }
 
-      // private displayPlayerScores(hideHouseScore: boolean): void {
-      //   this.players.forEach((player, index) => {
-      //     const playerScoreText = this.playerScoreTexts[index];
+      dealCard(
+        player: BlackjackPlayer,
+        x: number,
+        y: number,
+        isFaceDown = false,
+      ) {
+        const card: Card | undefined = this.deck?.drawOne();
+        if (!card) return;
 
-      //     if (player.playerType === 'player') {
-      //       playerScoreText.setText(player.getHandScore().toString());
-      //       Phaser.Display.Align.To.TopCenter(
-      //         playerScoreText as Text,
-      //         this.playerHandZones[index] as Zone,
-      //         0,
-      //         0,
-      //       );
-      //     }
+        card.setDisplaySize(100, 120).setX(x).setY(y);
+        this.add.existing(card);
+      }
 
-      //     if (player.playerType === 'house') {
-      //       if (!hideHouseScore) {
-      //         playerScoreText.setText(player.getHandScore().toString());
-      //         Phaser.Display.Align.To.BottomCenter(
-      //           playerScoreText as Text,
-      //           this.playerHandZones[index] as Zone,
-      //           0,
-      //           0,
-      //         );
-      //       }
-      //     }
-      //   });
-      // }
+      private createPlayerScoreTexts(): void {
+        // NOTE: 前回のゲームで作成したものが残っている可能性があるので、初期化する
+        this.playerScoreTexts = [];
+        this.players.forEach((player, index) => {
+          const playerScoreText = this.add.text(0, 200, '', STYLE.TEXT);
+
+          if (player.playerType === 'player') {
+            Phaser.Display.Align.To.TopCenter(
+              playerScoreText as Text,
+              this.handZones[index] as Zone,
+              0,
+              0,
+            );
+          } else if (player.playerType === 'house') {
+            Phaser.Display.Align.To.BottomCenter(
+              playerScoreText as Text,
+              this.handZones[index] as Zone,
+              0,
+              0,
+            );
+          }
+
+          this.playerScoreTexts.push(playerScoreText);
+        });
+      }
+
+      private displayCardsScore(hideHouseScore: boolean): void {
+        this.players.forEach((player, index) => {
+          const playerScoreText = this.playerScoreTexts[index];
+
+          if (player.playerType === 'player') {
+            playerScoreText.setText(player.getHandScore().toString());
+            Phaser.Display.Align.To.TopCenter(
+              playerScoreText as Text,
+              this.handZones[index] as Zone,
+              0,
+              0,
+            );
+          }
+
+          if (player.playerType === 'house') {
+            if (!hideHouseScore) {
+              playerScoreText.setText(player.getHandScore().toString());
+              Phaser.Display.Align.To.BottomCenter(
+                playerScoreText as Text,
+                this.handZones[index] as Zone,
+                0,
+                0,
+              );
+            }
+          }
+        });
+      }
     }
 
     const MAX_SIZE_WIDTH_SCREEN = 1920;
