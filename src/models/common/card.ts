@@ -49,7 +49,7 @@ class Card extends Phaser.GameObjects.Image {
   // rankに対応する数値を取得。
   getRankNumber(): number {
     const rankToNum: { [key: string]: number } = {
-      A: 1,
+      A: 11,
       '2': 2,
       '3': 3,
       '4': 4,
@@ -59,9 +59,9 @@ class Card extends Phaser.GameObjects.Image {
       '8': 8,
       '9': 9,
       '10': 10,
-      J: 11,
-      Q: 12,
-      K: 13,
+      J: 10,
+      Q: 10,
+      K: 10,
     };
     return rankToNum[this.#rank] ?? 0; // if rankToNum[this.rank] is undefined, this function returns 0
   }

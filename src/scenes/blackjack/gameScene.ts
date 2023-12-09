@@ -1,12 +1,21 @@
 'use client';
 import { useState, useEffect } from 'react';
 import * as Phaser from 'phaser';
+
+// model, class
 import Deck from '@/models/common/deck';
 import Card from '@/models/common/card';
+import Button from '@/models/common/button';
 import BlackjackPlayer from '@/models/blackjack/blackjackPlayer';
+// Scene
 import BaseGameScene from '@/scenes/BaseGameScene';
-
+import StackScene from '@/scenes/blackjack/stackScene';
+import LoadingScene from '@/scenes/LoadingScene';
+// Blackjackで使用する定数
+import GameResult from '@/constants/blackjack/GameResult';
+import GameStatus from '@/constants/blackjack/GameStatus';
 import STYLE from '@/constants/style';
+// Phaser関連の型
 import Zone = Phaser.GameObjects.Zone;
 import Image = Phaser.GameObjects.Image;
 import Text = Phaser.GameObjects.Text;
@@ -24,6 +33,16 @@ const GameScene = () => {
       height: number = 0;
       playerScoreTexts: Text[] = [];
 
+      gameStatus: GameStatus = GameStatus.START_OF_GAME;
+
+      // ボタン
+      standButton: Button | undefined;
+      hitButton: Button | undefined;
+      doubleButton: Button | undefined;
+      // Todo 別ファイルに記載
+      CARD_WIDTH = 100;
+      CARD_HEIGHT = 120;
+
       constructor() {
         super('blackjackGame');
       }
@@ -38,14 +57,25 @@ const GameScene = () => {
         this.createHandZones();
         this.createPlayerScoreTexts();
         this.dealTwoCards();
-        // this.displayPlayerScores();
 
-        // 画面中央に画像とテキストを配置
-        // this.load.start();
+        this.time.delayedCall(1500, () => {
+          this.displayButtons();
+        });
       }
 
-      // ゲームが始まってから行う処理
-      // Todo BaseGameSceneなどに持たせる
+      update(): void {
+        let result: GameResult | undefined;
+
+        if (this.gameStatus === GameStatus.ROUND_OVER) {
+          result = this.judgeGameResult();
+        }
+
+        if (this.gameStatus === GameStatus.END_OF_GAME && result) {
+          this.time.delayedCall(1000, () => {
+            this.endHand(result as GameResult);
+          });
+        }
+      }
 
       // プレイヤーの名前を作成
       protected createPlayerNameTexts(): void {
@@ -96,21 +126,21 @@ const GameScene = () => {
               playerHandZone as Zone,
               this.playerNames[index],
               0,
-              STYLE.GUTTER_SIZE,
+              10,
             );
           } else if (player.playerType === 'house') {
             Phaser.Display.Align.To.BottomCenter(
               playerHandZone as Zone,
               this.playerNames[index],
               0,
-              STYLE.GUTTER_SIZE,
+              10,
             );
           } else if (player.playerType === 'cpu') {
             Phaser.Display.Align.To.BottomCenter(
               playerHandZone as Zone,
               this.playerNames[index],
               0,
-              STYLE.GUTTER_SIZE,
+              10,
             );
           }
           // aiが存在する場合は、個別に位置の設定が必要。
@@ -137,22 +167,35 @@ const GameScene = () => {
         });
 
         this.time.delayedCall(1200, () => {
-          this.dealCard(house, houseHandZone.x + 10, houseHandZone.y, true);
+          this.dealCard(house, houseHandZone.x + 10, houseHandZone.y, false);
+          this.displayCardsScore(true);
         });
-        this.displayCardsScore(true);
       }
 
       dealCard(
         player: BlackjackPlayer,
         x: number,
         y: number,
-        isFaceDown = false,
+        isCardFaceUp = true,
       ) {
         const card: Card | undefined = this.deck?.drawOne();
         if (!card) return;
 
-        card.setDisplaySize(100, 120).setX(x).setY(y);
-        this.add.existing(card);
+        player.addCardToHand(card);
+        if (isCardFaceUp) {
+          card
+            .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
+            .setX(x)
+            .setY(y);
+          this.add.existing(card);
+        } else {
+          const backCard = this.add.image(0, 0, 'back_card');
+          backCard
+            .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
+            .setX(x)
+            .setY(y);
+          this.add.existing(backCard);
+        }
       }
 
       private createPlayerScoreTexts(): void {
@@ -191,7 +234,7 @@ const GameScene = () => {
               playerScoreText as Text,
               this.handZones[index] as Zone,
               0,
-              0,
+              10,
             );
           }
 
@@ -202,45 +245,180 @@ const GameScene = () => {
                 playerScoreText as Text,
                 this.handZones[index] as Zone,
                 0,
-                0,
+                10,
               );
             }
           }
         });
       }
+
+      private displayButtons(): void {
+        this.standButton = this.createStandButton();
+        this.hitButton = this.createHitButton();
+        this.doubleButton = this.createDoubleButton();
+
+        const buttons: Button[] = [];
+        buttons.push(this.standButton);
+        buttons.push(this.hitButton);
+        buttons.push(this.doubleButton);
+
+        for (let i = 0; i < buttons.length; i++) {
+          buttons[i].setX(300 * (1 + i));
+        }
+      }
+
+      private createHitButton(): Button {
+        const hitButton = new Button(this, 0, 350, 'button', 'Hit');
+        hitButton.setClickHandler(() => this.handleHit());
+        return hitButton;
+      }
+
+      private createStandButton(): Button {
+        const standButton = new Button(this, 0, 350, 'button', 'Stand');
+        standButton.setClickHandler(() => this.handleStand());
+        return standButton;
+      }
+
+      private createDoubleButton(): Button {
+        const doubleButton = new Button(this, 0, 350, 'button', 'Double');
+        doubleButton.setClickHandler(() => this.handleDouble());
+        return doubleButton;
+      }
+
+      private handleHit(): void {
+        const player = this.players[0];
+        const playerHandZone = this.handZones[0];
+
+        this.doubleButton?.hide();
+
+        this.dealCard(
+          player,
+          playerHandZone.x +
+            this.CARD_WIDTH * (player.getCardsNum() * 0.3 - 0.15),
+          playerHandZone.y,
+        );
+        this.displayCardsScore(true);
+
+        if (player.getHandScore() > 21) {
+          this.hideButtons();
+          this.turnOverCard();
+          this.displayCardsScore(false);
+          player.gameStatus = 'bust';
+          this.gameStatus = GameStatus.ROUND_OVER;
+        }
+      }
+
+      private handleStand(): void {
+        const player = this.players[0];
+
+        this.playHouseFlipOver();
+        this.setPlayerScoreTexts(false);
+        this.hideButtons();
+
+        if (PlayScene.isBlackjack(player)) {
+          player.gameStatus = 'blackjack';
+        } else {
+          player.gameStatus = 'stand';
+        }
+
+        this.time.delayedCall(1000, () => this.drawCardsUntil17());
+      }
+
+      private handleDouble(): void {
+        const player = this.players[0];
+        const playerHandZone = this.playerHandZones[0];
+
+        this.setBetDouble();
+
+        this.handOutCard(
+          this.deck as Deck,
+          player,
+          playerHandZone.x +
+            GAME.CARD.WIDTH * (player.getCardsNum() * 0.3 - 0.15),
+          playerHandZone.y,
+          false,
+        );
+
+        this.handleStand();
+
+        if (PlayScene.isBust(player)) {
+          player.gameStatus = 'bust';
+        }
+      }
+
+      // HIT, STAND, DOUBLEの全ボタンを非表示にする
+      private hideButtons(): void {
+        this.hitButton?.hide();
+        this.standButton?.hide();
+        this.doubleButton?.hide();
+      }
+
+      // Houseの裏になっているカードをひっくり返す
+      private turnOverCard(): void {
+        const house = this.players[1];
+        const houseHandZone = this.handZones[1];
+        const backCard = house.hand[1];
+        backCard
+          .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
+          .setX(houseHandZone.x + 10)
+          .setY(houseHandZone.y);
+        this.add.existing(backCard);
+
+        // house.hand.forEach((card) => {
+        //   if (card.isFaceDown) {
+        //     card.playFlipOverTween();
+        //   }
+        // });
+      }
+
+      private judgeGameResult(): GameResult {
+        const player = this.players[0];
+        const playerHandScore = player.getHandScore();
+        const house = this.players[1];
+        const houseHandScore = house.getHandScore();
+
+        this.gameStatus = GameStatus.END_OF_GAME;
+
+        if (player.gameStatus === 'bust') {
+          return GameResult.BUST;
+        }
+
+        if (player.gameStatus === 'blackjack') {
+          if (house.gameStatus !== 'blackjack') {
+            return GameResult.BLACKJACK;
+          }
+          return GameResult.PUSH;
+        }
+
+        if (player.gameStatus === 'stand') {
+          if (house.gameStatus === 'bust' || playerHandScore > houseHandScore) {
+            return GameResult.WIN;
+          }
+
+          if (
+            house.gameStatus === 'blackjack' ||
+            houseHandScore > playerHandScore
+          ) {
+            return GameResult.LOSS;
+          }
+
+          if (houseHandScore === playerHandScore) {
+            return GameResult.PUSH;
+          }
+        }
+
+        return GameResult.SURRENDER;
+      }
     }
-
-    const MAX_SIZE_WIDTH_SCREEN = 1920;
-    const MAX_SIZE_HEIGHT_SCREEN = 1080;
-    const MIN_SIZE_WIDTH_SCREEN = 270;
-    const MIN_SIZE_HEIGHT_SCREEN = 480;
-    const SIZE_WIDTH_SCREEN = 540;
-    const SIZE_HEIGHT_SCREEN = 960;
-
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
       backgroundColor: '#000000',
       autoCenter: Phaser.Scale.CENTER_BOTH,
       mode: Phaser.Scale.FIT,
-      // scale: {
-      //   parent: 'blackjackGame',
-      //   width: SIZE_WIDTH_SCREEN,
-      //   height: SIZE_HEIGHT_SCREEN,
-      //   min: {
-      //     width: MIN_SIZE_WIDTH_SCREEN,
-      //     height: MIN_SIZE_HEIGHT_SCREEN,
-      //   },
-      //   max: {
-      //     width: MAX_SIZE_WIDTH_SCREEN,
-      //     height: MAX_SIZE_HEIGHT_SCREEN,
-      //   },
-      // },
-      // width: window.innerWidth * window.devicePixelRatio,
-      // height: window.innerHeight * window.devicePixelRatio,
       width: 1200,
-      height: 780,
+      height: 600,
       parent: 'blackjackGame',
-      scene: [BlackjackScene],
+      scene: [LoadingScene, StackScene, BlackjackScene],
     };
     setConfig(config);
     const game = new Phaser.Game(config);
@@ -249,9 +427,6 @@ const GameScene = () => {
   if (!config) {
     loadGame();
   }
-  // useEffect(() => {
-  //   loadGame();
-  // }, []);
 
   return null;
 };

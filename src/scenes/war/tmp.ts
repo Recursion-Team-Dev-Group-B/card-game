@@ -1,5 +1,8 @@
+'use client';
+import { useState, useEffect } from 'react';
 import * as Phaser from 'phaser';
 import Deck from '@/models/common/deck';
+import Card from '@/models/common/card';
 import BlackjackPlayer from '@/models/blackjack/blackjackPlayer';
 
 import Storage from '@/utils/storage';
@@ -30,7 +33,6 @@ class BaseGameScene extends Phaser.Scene {
   constructor(sceneKey: string) {
     super(sceneKey);
     this.storage = new Storage();
-    this.setChips();
   }
 
   preload() {}
@@ -47,13 +49,13 @@ class BaseGameScene extends Phaser.Scene {
     this.createGameZone();
 
     this.createChipsAndBetZone();
-    this.setChipsText();
-    this.setBetText();
+    this.displayChipsText();
+    this.displayBetText();
   }
 
   private setChips() {
     const chips: number = this.storage.get('chips') || 1000;
-    const bet: number = 0;
+    const bet: number = this.storage.get('bet') || 0;
 
     this.storage.set('chips', chips);
     this.storage.set('bet', bet);
@@ -82,12 +84,7 @@ class BaseGameScene extends Phaser.Scene {
     this.tableImage.setScale(scale);
   }
 
-  private createTextObj() {
-    // 掛け金表示用Textオブジェクト
-    this.bet = this.add.text(0, 0, '', STYLE.CHIPS);
-    // チップ表示用Textオブジェクト
-    this.chips = this.add.text(0, 0, '', STYLE.CHIPS);
-  }
+
 
   // GameZoneを作成
   createGameZone(): void {
@@ -120,16 +117,32 @@ class BaseGameScene extends Phaser.Scene {
     // );
   }
 
-  protected setChipsText(): void {
-    const chipsValue: number = this.storage.get('chips') || 0;
-    const chips: Text = this.chips!.setText(`chips: ${String(chipsValue)}`);
+  protected displayChipsText(): void {
+    // this.chips = this.add.text(0, 0, '', STYLE.CHIPS);
 
-    Phaser.Display.Align.In.TopLeft(chips, this.chipBetZone as Zone, 0, 0);
+    this.setChipsText();
+  }
+
+  protected setChipsText(): void {
+    const chips: number = this.storage.get('chips') || 0;
+    this.chips?.setText(`chips: ${String(chips)}`);
+    Phaser.Display.Align.In.TopLeft(
+      this.chips as Text,
+      this.chipBetZone as Zone,
+      0,
+      0,
+    );
+  }
+
+  protected displayBetText(): void {
+    // this.bet = this.add.text(0, 0, '', STYLE.CHIPS);
+
+    this.setBetText();
   }
 
   protected setBetText(): void {
-    const betValue: number = this.storage.get('bet') || 0;
-    this.bet.setText(`bet: ${String(betValue)}`);
+    const bet: number = this.storage.get('bet') || 0;
+    this.bet?.setText(`bet: ${String(bet)}`);
 
     Phaser.Display.Align.To.BottomLeft(
       this.bet as Text,

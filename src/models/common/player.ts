@@ -7,6 +7,7 @@ export abstract class Player {
   public name: string;
   public readonly playerType: string;
   private gameType: string;
+  public gameStatus: string;
   private chips: number;
   private bet: number | undefined;
   hand: Array<Card> = [];
@@ -15,6 +16,7 @@ export abstract class Player {
         name: プレイヤーの名前
         playerType: プレイヤーのタイプ　[player, house, cpu]のいずれか
         gameType: プレイヤーが遊ぶゲーム [blackJack, poker, war, speed]
+        gameStatus: ゲームのステータス
         chips:　プレイヤーのチップの数, 初期値: 1000
         winAmount: プレイヤーが買った場合に支払われる賞金
         bet: プレイヤーの掛け金
@@ -29,6 +31,7 @@ export abstract class Player {
     this.playerType = playerType;
     this.gameType = gameType;
     this.chips = this.setChips();
+    this.gameStatus = 'gameStart';
   }
 
   // プレイヤーの名前を取得
@@ -84,6 +87,11 @@ export abstract class Player {
   // 手札を空にする
   clearHand() {
     this.hand = [];
+  }
+
+  // 手札の数
+  getCardsNum(): number {
+    return this.hand.length;
   }
 
   // プレイヤーのチップを設定する

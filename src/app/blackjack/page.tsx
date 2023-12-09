@@ -15,7 +15,7 @@ const Page = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     setLoading(true);
-    storage.set('chips', 1000);
+    // storage.set('chips', 1000);
   }, []);
   return (
     <div>
