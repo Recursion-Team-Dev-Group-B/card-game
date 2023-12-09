@@ -25,9 +25,17 @@ class StackScene extends BaseGameScene {
   CARD_WIDTH = 100;
   CARD_HEIGHT = 120;
 
-  // Button
+  // ActionButton
   dealButton!: Button;
   resetButton!: Button;
+
+  // button
+  betButton10!: Button;
+  betButton20!: Button;
+  betButton50!: Button;
+  betButton100!: Button;
+  betButton200!: Button;
+  betButtons: Button[] = [];
 
   constructor() {
     super('blackjackStackScene');
@@ -39,6 +47,8 @@ class StackScene extends BaseGameScene {
 
   create() {
     super.create('blackjackGame');
+    // 前のゲームのボタンが残っているため初期化
+    this.betButtons = [];
     this.displayBetButtons();
     this.displayDealButton();
     this.displayResetButton();
@@ -47,40 +57,59 @@ class StackScene extends BaseGameScene {
   update(): void {}
 
   private displayBetButtons(): void {
-    const buttons = this.createBetButtons();
+    this.createBetButtons();
 
-    for (let i = 0; i < buttons.length; i++) {
-      buttons[i].setX(200 * (1 + i));
+    for (let i = 0; i < this.betButtons.length; i++) {
+      this.betButtons[i].setX(200 * (1 + i));
     }
   }
 
-  private createBetButtons(): Button[] {
-    const buttons: Button[] = [];
-    const numberList = [10, 50, 100, 200];
-    numberList.forEach((bet) => {
-      const betButton = new Button(this, 0, 350, 'button', String(bet));
-      betButton.setClickHandler(() => {
-        let totalBet = Number(this.storage.get('bet'));
-        const clickedBet = Number(betButton.text);
-        const chips = Number(this.storage.get('chips'));
+  private createBetButtons() {
+    this.betButton10 = new Button(this, 0, 350, 'button', '10');
+    this.betButtons.push(this.betButton10);
+    this.betButton10.setClickHandler(() => {
+      this.clickBetButton(this.betButton10);
+    });
+    this.betButton20 = new Button(this, 0, 350, 'button', '20');
+    this.betButtons.push(this.betButton20);
+    this.betButton20.setClickHandler(() => {
+      this.clickBetButton(this.betButton20);
+    });
+    this.betButton50 = new Button(this, 0, 350, 'button', '50');
+    this.betButtons.push(this.betButton50);
+    this.betButton50.setClickHandler(() => {
+      this.clickBetButton(this.betButton50);
+    });
+    this.betButton100 = new Button(this, 0, 350, 'button', '100');
+    this.betButtons.push(this.betButton100);
+    this.betButton100.setClickHandler(() => {
+      this.clickBetButton(this.betButton100);
+    });
+    this.betButton200 = new Button(this, 0, 350, 'button', '200');
+    this.betButtons.push(this.betButton200);
+    this.betButton200.setClickHandler(() => {
+      this.clickBetButton(this.betButton200);
+    });
+  }
 
-        if (totalBet + clickedBet <= chips) {
-          totalBet = this.addBet(clickedBet);
-          this.dealButton.show();
-          // 現在のベット金額とクリックしたチップの合計が所持金を上回る場合は、チップを非表示
-          buttons.forEach((button: Button) => {
-            if (totalBet + Number(button.text) > chips) {
-              button.hide();
-            }
-          });
-        }
-        if (totalBet) {
-          this.resetButton.show();
+  private clickBetButton(button: Button) {
+    let totalBet = Number(this.storage.get('bet'));
+    const clickedBet = Number(button.text);
+    const chips = Number(this.storage.get('chips'));
+
+    if (totalBet + clickedBet <= chips) {
+      totalBet = this.addBet(clickedBet);
+      // 現在のベット金額とクリックしたチップの合計が所持金を上回る場合は、チップを非表示
+      this.betButtons.forEach((button: Button) => {
+        if (totalBet + Number(button.text) > chips) {
+          button.hide();
         }
       });
-      buttons.push(betButton);
-    });
-    return buttons;
+    }
+    if (totalBet) {
+      this.dealButton.show();
+      this.resetButton.show();
+    }
   }
 
   private addBet(extraBet: number): number {
@@ -117,6 +146,7 @@ class StackScene extends BaseGameScene {
     this.resetButton.setClickHandler(() => {
       if (this.bet) {
         this.resetBet();
+        this.dealButton.hide();
       }
     });
     Phaser.Display.Align.In.Center(
@@ -129,6 +159,11 @@ class StackScene extends BaseGameScene {
   }
 
   private resetBet() {
+    this.betButton10.show();
+    this.betButton20.show();
+    this.betButton50.show();
+    this.betButton100.show();
+    this.betButton200.show();
     this.storage.set('bet', 0);
     this.bet.setText('bet: 0');
   }

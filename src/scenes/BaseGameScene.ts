@@ -138,6 +138,13 @@ class BaseGameScene extends Phaser.Scene {
       0,
     );
   }
+
+  updateStorageChips(chips: number) {
+    this.storage.set('chips', chips);
+  }
+  updateStorageBet() {
+    this.storage.set('bet', 0);
+  }
 }
 
 export default BaseGameScene;

@@ -20,6 +20,15 @@ import Zone = Phaser.GameObjects.Zone;
 import Image = Phaser.GameObjects.Image;
 import Text = Phaser.GameObjects.Text;
 
+interface Amount {
+  [key: string]: number;
+  WIN: number;
+  LOSS: number;
+  PUSH: number;
+  BLACKJACK: number;
+  BUST: number;
+}
+
 const GameScene = () => {
   const [config, setConfig] = useState<Phaser.Types.Core.GameConfig>();
   const loadGame = async () => {
@@ -72,7 +81,7 @@ const GameScene = () => {
 
         if (this.gameStatus === GameStatus.END_OF_GAME && result) {
           this.time.delayedCall(1000, () => {
-            this.endHand(result as GameResult);
+            this.endGame(result as GameResult);
           });
         }
       }
@@ -408,6 +417,51 @@ const GameScene = () => {
         }
 
         return GameResult.SURRENDER;
+      }
+
+      private endGame(result: any) {
+        console.log('END GAME');
+        console.log(result);
+        this.displayResult(result);
+        this.settleChips(result);
+        this.input.once(
+          'pointerdown',
+          () => {
+            this.scene.start('blackjackStackScene');
+            this.scene.stop('blackjackGame');
+          },
+          this,
+        );
+      }
+
+      private displayResult(result: string) {
+        const resultText = this.add.text(0, 0, result, STYLE.TEXT);
+
+        Phaser.Display.Align.In.BottomCenter(
+          resultText,
+          this.gameZone as Zone,
+          0,
+          0,
+        );
+      }
+
+      private settleChips(result: string): void {
+        const bet = Number(this.storage.get('bet'));
+        let chips = Number(this.storage.get('chips'));
+
+        const Amount: Amount = {
+          [GameResult.WIN]: bet,
+          [GameResult.LOSS]: -bet,
+          [GameResult.PUSH]: 0,
+          [GameResult.BLACKJACK]: bet * 1.5,
+          [GameResult.BUST]: -bet,
+        };
+
+        chips += Amount[result];
+        this.updateStorageChips(chips);
+        this.updateStorageBet();
+        this.setChipsText();
+        this.setBetText();
       }
     }
     const config: Phaser.Types.Core.GameConfig = {
