@@ -19,6 +19,7 @@ import STYLE from '@/constants/style';
 import Zone = Phaser.GameObjects.Zone;
 import Image = Phaser.GameObjects.Image;
 import Text = Phaser.GameObjects.Text;
+import TimeEvent = Phaser.Time.TimerEvent;
 
 interface Amount {
   [key: string]: number;
@@ -43,6 +44,8 @@ const GameScene = () => {
       playerScoreTexts: Text[] = [];
 
       gameStatus: GameStatus = GameStatus.START_OF_GAME;
+
+      timeEvent: TimeEvent | undefined;
 
       // ボタン
       standButton: Button | undefined;
@@ -320,11 +323,11 @@ const GameScene = () => {
       private handleStand(): void {
         const player = this.players[0];
 
-        this.playHouseFlipOver();
-        this.setPlayerScoreTexts(false);
+        this.turnOverCard();
+        this.displayCardsScore(false);
         this.hideButtons();
 
-        if (PlayScene.isBlackjack(player)) {
+        if (this.isBlackjack(player)) {
           player.gameStatus = 'blackjack';
         } else {
           player.gameStatus = 'stand';
@@ -333,26 +336,82 @@ const GameScene = () => {
         this.time.delayedCall(1000, () => this.drawCardsUntil17());
       }
 
+      private isBlackjack(player: BlackjackPlayer): boolean {
+        return player.getCardsNum() === 2 && player.getHandScore() === 21;
+      }
+
+      private drawCardsUntil17(): void {
+        const house = this.players[1];
+        const houseHandZone = this.handZones[1];
+
+        this.timeEvent = this.time.addEvent({
+          delay: 800,
+          callback: () => {
+            const houseScore = house.getHandScore();
+
+            if (houseScore >= 17) {
+              this.timeEvent?.remove();
+              this.gameStatus = GameStatus.ROUND_OVER;
+
+              if (house.getHandScore() > 21) {
+                house.gameStatus = 'bust';
+                return;
+              }
+              if (this.isBlackjack(house)) {
+                house.gameStatus = 'blackjack';
+                return;
+              }
+              house.gameStatus = 'stand';
+              return;
+            }
+
+            house.gameStatus = 'hit';
+            this.dealCard(
+              house,
+              houseHandZone.x +
+                this.CARD_WIDTH * (house.getCardsNum() * 0.3 - 0.15),
+              houseHandZone.y,
+            );
+            this.displayCardsScore(false);
+          },
+          callbackScope: this,
+          loop: true,
+        });
+      }
+
       private handleDouble(): void {
         const player = this.players[0];
-        const playerHandZone = this.playerHandZones[0];
+        const playerHandZone = this.handZones[0];
 
-        this.setBetDouble();
+        let bet: number = Number(this.storage.get('bet'));
+        this.addBet(bet);
 
-        this.handOutCard(
-          this.deck as Deck,
+        this.dealCard(
           player,
           playerHandZone.x +
-            GAME.CARD.WIDTH * (player.getCardsNum() * 0.3 - 0.15),
+            this.CARD_WIDTH * (player.getCardsNum() * 0.3 - 0.15),
           playerHandZone.y,
-          false,
         );
 
         this.handleStand();
 
-        if (PlayScene.isBust(player)) {
+        if (this.isBust(player)) {
           player.gameStatus = 'bust';
         }
+      }
+
+      private isBust(player: BlackjackPlayer): boolean {
+        return player.getHandScore() > 21;
+      }
+
+      private addBet(extraBet: number): number {
+        let bet: number = Number(this.storage.get('bet'));
+        bet += extraBet;
+        this.storage.set('bet', bet);
+        // 掛け金の表示更新
+        this.bet.setText(`bet: ${String(bet)}`);
+
+        return bet;
       }
 
       // HIT, STAND, DOUBLEの全ボタンを非表示にする
