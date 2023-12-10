@@ -1,42 +1,37 @@
 import Card from './card';
 
+import Storage from '@/utils/storage';
+
 export abstract class Player {
-  private name: string;
-  private playerType: string;
+  public storage: Storage;
+  public name: string;
+  public readonly playerType: string;
   private gameType: string;
+  public gameStatus: string;
   private chips: number;
-  private winAmount: number;
-  private bet: number;
-  private action: string;
-  private hand: Array<Card> = [];
+  private bet: number | undefined;
+  hand: Array<Card> = [];
 
   /*
         name: プレイヤーの名前
         playerType: プレイヤーのタイプ　[player, house, cpu]のいずれか
         gameType: プレイヤーが遊ぶゲーム [blackJack, poker, war, speed]
+        gameStatus: ゲームのステータス
         chips:　プレイヤーのチップの数, 初期値: 1000
         winAmount: プレイヤーが買った場合に支払われる賞金
         bet: プレイヤーの掛け金
-        aciton: 各ゲームにおいてプレイヤーが選択した行動
+        action: 各ゲームにおいてプレイヤーが選択した行動
                 blackJackの場合: [hit, bust, stand, blackjack, surrender ]
     */
 
-  constructor(
-    name: string,
-    playerType: string,
-    gameType: string,
-    chips: number = 1000,
-    winAmount: number,
-    bet: number,
-    aciton: string,
-  ) {
+  constructor(name: string, playerType: string, gameType: string) {
+    this.storage = new Storage();
+
     this.name = name;
     this.playerType = playerType;
     this.gameType = gameType;
-    this.chips = chips;
-    this.winAmount = winAmount;
-    this.bet = bet;
-    this.action = aciton;
+    this.chips = this.setChips();
+    this.gameStatus = 'gameStart';
   }
 
   // プレイヤーの名前を取得
@@ -58,12 +53,10 @@ export abstract class Player {
   get getChips(): number {
     return this.chips;
   }
-  // プレイヤーのチップを設定する
-  set setChips(chips: number) {
-    this.chips = chips;
-  }
+
   // プレイヤーがベットした金額を取得する
   get getBet(): number {
+    if (!this.bet) return 0;
     return this.bet;
   }
   // プレイヤーがベットした金額を設定する
@@ -82,13 +75,13 @@ export abstract class Player {
   }
 
   // プレイヤーが選択したアクションを取得
-  get getAction(): string {
-    return this.action;
-  }
+  // get getAction(): string {
+  //   return this.action;
+  // }
 
   // プレイヤーが選択したアクションを設定
-  set setAction(aciton: string) {
-    this.action = aciton;
+  set setAction(action: string) {
+    this.action = action;
   }
 
   // 手札を空にする
@@ -96,14 +89,23 @@ export abstract class Player {
     this.hand = [];
   }
 
+  // 手札の数
+  getCardsNum(): number {
+    return this.hand.length;
+  }
+
+  // プレイヤーのチップを設定する
+  // localStorageにチップがある場合はそのチップをセット
+  setChips() {
+    let chips = this.storage.get('chips');
+    if (!chips) {
+      chips = 1000;
+    }
+    return chips;
+  }
+
   // 手札にカードを加える
   addCardToHand(card: Card) {
     this.hand.push(card);
   }
-
-  /*
-        promptPlayer() {} 
-
-        getHandScore() {}
-    */
 }
