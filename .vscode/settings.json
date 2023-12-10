@@ -5,6 +5,9 @@
   "editor.formatOnSave": true,
   // ファイル保存時、ESLint による自動フォーマット
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   }
 }
