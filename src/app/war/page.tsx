@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 const DynamicComponentWithNoSSR = dynamic(
-  () => import('@/scenes/war/gameScene'),
+  () => import('../../scenes/war/LoadingScene'),
   {
     ssr: false,
   },
