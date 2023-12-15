@@ -1,4 +1,4 @@
-import Deck from '@/models/deck';
+import Deck from '@/models/common/deck';
 
 export class CardDistScene extends Phaser.Scene {
 
