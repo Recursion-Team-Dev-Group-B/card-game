@@ -45,6 +45,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('club_7', '/game/common/images/cards/club_7.png');
     this.load.image('club_8', '/game/common/images/cards/club_8.png');
     this.load.image('club_9', '/game/common/images/cards/club_9.png');
+    this.load.image('club_10', '/game/common/images/cards/club_10.png');
     this.load.image('club_J', '/game/common/images/cards/club_J.png');
     this.load.image('club_Q', '/game/common/images/cards/club_Q.png');
     this.load.image('club_K', '/game/common/images/cards/club_K.png');
@@ -57,6 +58,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('diamond_7', '/game/common/images/cards/diamond_7.png');
     this.load.image('diamond_8', '/game/common/images/cards/diamond_8.png');
     this.load.image('diamond_9', '/game/common/images/cards/diamond_9.png');
+    this.load.image('diamond_10', '/game/common/images/cards/diamond_10.png');
     this.load.image('diamond_J', '/game/common/images/cards/diamond_J.png');
     this.load.image('diamond_Q', '/game/common/images/cards/diamond_Q.png');
     this.load.image('diamond_K', '/game/common/images/cards/diamond_K.png');
@@ -69,6 +71,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('heart_7', '/game/common/images/cards/heart_7.png');
     this.load.image('heart_8', '/game/common/images/cards/heart_8.png');
     this.load.image('heart_9', '/game/common/images/cards/heart_9.png');
+    this.load.image('heart_10', '/game/common/images/cards/heart_10.png');
     this.load.image('heart_J', '/game/common/images/cards/heart_J.png');
     this.load.image('heart_Q', '/game/common/images/cards/heart_Q.png');
     this.load.image('heart_K', '/game/common/images/cards/heart_K.png');
@@ -81,6 +84,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('spade_7', '/game/common/images/cards/spade_7.png');
     this.load.image('spade_8', '/game/common/images/cards/spade_8.png');
     this.load.image('spade_9', '/game/common/images/cards/spade_9.png');
+    this.load.image('spade_10', '/game/common/images/cards/spade_10.png');
     this.load.image('spade_J', '/game/common/images/cards/spade_J.png');
     this.load.image('spade_Q', '/game/common/images/cards/spade_Q.png');
     this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
@@ -123,7 +127,7 @@ class LoadingScene extends Phaser.Scene {
     });
 
     this.load.on('complete', () => {
-      this.cameras.main.fadeOut(1000, 0, 0, 0, () => {});
+      this.cameras.main.fadeOut(1000, 0, 0, 0, () => { });
     });
   }
 
@@ -140,7 +144,7 @@ class LoadingScene extends Phaser.Scene {
     );
   }
 
-  update() {}
+  update() { }
 }
 
 export default LoadingScene;
