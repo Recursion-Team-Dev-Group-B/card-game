@@ -36,6 +36,7 @@ class LoadingScene extends Phaser.Scene {
   preload() {
     // テーブル画像をロード
     this.load.image('blackjackTable', '/game/blackjack/blackjackTable.jpeg');
+    // トランプカードをロード
     this.load.image('club_A', '/game/common/images/cards/club_A.png');
     this.load.image('club_2', '/game/common/images/cards/club_2.png');
     this.load.image('club_3', '/game/common/images/cards/club_3.png');
@@ -90,6 +91,17 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
     this.load.image('back_card', '/game/common/images/cards/back_card.png');
     this.load.image('button', '/game/common/button/button.png');
+    this.load.image('chipBlack', '/game/common/chip/chipBlack.png');
+    this.load.image('chipBlue', '/game/common/chip/chipBlue.png');
+    this.load.image('chipBrown', '/game/common/chip/chipBrown.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipGray', '/game/common/chip/chipGray.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipOrange', '/game/common/chip/chipOrange.png');
+    this.load.image('chipPink', '/game/common/chip/chipPink.png');
+    this.load.image('chipPurple', '/game/common/chip/chipPurple.png');
+    this.load.image('chipRed', '/game/common/chip/chipRed.png');
+    this.load.image('chipYellow', '/game/common/chip/chipYellow.png');
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;

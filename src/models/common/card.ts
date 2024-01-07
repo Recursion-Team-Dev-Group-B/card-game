@@ -40,6 +40,54 @@ class Card extends Phaser.GameObjects.Image {
     return this.#faceDown;
   }
 
+  /**
+ * カードを裏返すアニメーションを再生。
+ * アニメーション完了後、カードの表面に更新する。
+ */
+  playFlipOverTween(): void {
+    console.log(this)
+    this.scene.add.tween({
+      targets: this,
+      scaleX: 0,
+      duration: 4000,
+      ease: 'Linear',
+    });
+    // this.scene.add.existing(this);
+
+
+
+
+    // this.scene.tweens.add({
+    //   targets: this,
+    //   scaleX: 0,
+    //   duration: 4000,
+    //   rotateY: 360,
+    //   ease: 'Linear',
+    //   onComplete: () => {
+    //     // アニメーション完了後に実行するコールバック関数を追加
+    //     this.hide();
+    //     this.scene.add.existing(this);
+    //     // this.#flipOverSound.play();
+    //     this.scene.tweens.add({
+    //       targets: this,
+    //       scaleX: 1,
+    //       duration: 4000,
+    //       delay: 4000,
+    //       ease: 'Linear'
+    //     });
+    //   }
+    // });
+  }
+
+  // 非表示にする
+  hide(): void {
+    this.setVisible(false);;
+  }
+  // 表示にする
+  show(): void {
+    this.setVisible(true);
+  }
+
   // カードのUI実装。
   // 裏向きでなければ、そのsuit-rankに紐づくカードの画像を返す
   getAtlasFrame(): string {
