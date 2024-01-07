@@ -59,10 +59,6 @@ class BlackjackScene extends BaseGameScene {
     super('blackjackGame');
   }
 
-  preload() {
-    super.preload();
-  }
-
   create() {
     super.create('blackjackGame');
     this.createPlayerNameTexts();
