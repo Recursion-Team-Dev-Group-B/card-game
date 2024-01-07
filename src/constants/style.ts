@@ -1,7 +1,7 @@
 const STYLE = {
   TEXT: {
     font: '24px Arial',
-    color: '#FFFFFF',
+    color: '#000000',
     // stroke: '#000000',
     strokeThickness: 2,
   },

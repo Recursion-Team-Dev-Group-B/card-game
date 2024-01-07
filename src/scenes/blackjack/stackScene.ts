@@ -41,10 +41,6 @@ class StackScene extends BaseGameScene {
     super('blackjackStackScene');
   }
 
-  preload() {
-    super.preload();
-  }
-
   create() {
     super.create('blackjackGame');
     // 前のゲームのボタンが残っているため初期化
@@ -54,38 +50,38 @@ class StackScene extends BaseGameScene {
     this.displayResetButton();
   }
 
-  update(): void {}
+  update(): void { }
 
   private displayBetButtons(): void {
     this.createBetButtons();
 
     for (let i = 0; i < this.betButtons.length; i++) {
-      this.betButtons[i].setX(200 * (1 + i));
+      this.betButtons[i].setX((this.width / 6) * (1 + i));
     }
   }
 
   private createBetButtons() {
-    this.betButton10 = new Button(this, 0, 350, 'button', '10');
+    this.betButton10 = new Button(this, 0, this.height / 2, 'chipGray', '10');
     this.betButtons.push(this.betButton10);
     this.betButton10.setClickHandler(() => {
       this.clickBetButton(this.betButton10);
     });
-    this.betButton20 = new Button(this, 0, 350, 'button', '20');
+    this.betButton20 = new Button(this, 0, this.height / 2, 'chipBlue', '20');
     this.betButtons.push(this.betButton20);
     this.betButton20.setClickHandler(() => {
       this.clickBetButton(this.betButton20);
     });
-    this.betButton50 = new Button(this, 0, 350, 'button', '50');
+    this.betButton50 = new Button(this, 0, this.height / 2, 'chipRed', '50');
     this.betButtons.push(this.betButton50);
     this.betButton50.setClickHandler(() => {
       this.clickBetButton(this.betButton50);
     });
-    this.betButton100 = new Button(this, 0, 350, 'button', '100');
+    this.betButton100 = new Button(this, 0, this.height / 2, 'chipGreen', '100');
     this.betButtons.push(this.betButton100);
     this.betButton100.setClickHandler(() => {
       this.clickBetButton(this.betButton100);
     });
-    this.betButton200 = new Button(this, 0, 350, 'button', '200');
+    this.betButton200 = new Button(this, 0, this.height / 2, 'chipOrange', '200');
     this.betButtons.push(this.betButton200);
     this.betButton200.setClickHandler(() => {
       this.clickBetButton(this.betButton200);
