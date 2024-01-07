@@ -127,14 +127,7 @@ class LoadingScene extends Phaser.Scene {
     });
     percentText.setOrigin(0.5, 0.5);
 
-    let progressBar = this.add.graphics();
-    let progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(240, 270, 320, 50);
     this.load.on('progress', function (value: any) {
-      progressBar.clear();
-      progressBar.fillStyle(0xffffff, 1);
-      progressBar.fillRect(250, 280, 300 * value, 30);
       percentText.setText(parseInt((value * 100) as any) + '%');
     });
 
