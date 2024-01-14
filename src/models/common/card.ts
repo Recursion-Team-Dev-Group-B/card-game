@@ -1,4 +1,6 @@
-import Phaser from 'phaser';
+// エラーのため　import Phaser from 'phaser';　を修正。
+import * as Phaser from 'phaser';
+
 class Card extends Phaser.GameObjects.Image {
   // カードはsuit（スペード、ハート、ダイヤモンド、クラブ）、rank（A、2-10、JQK）、裏表のプロパティを持つものとする。
   readonly #suit: string;
