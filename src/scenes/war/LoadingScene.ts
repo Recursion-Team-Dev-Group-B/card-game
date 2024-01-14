@@ -1,7 +1,7 @@
 'use client';
 import * as Phaser from 'phaser';
 import { useState } from 'react';
-import Image = Phaser.GameObjects.Image;
+type Image = Phaser.GameObjects.Image;
 import { Scenes } from './index';
 
 const StartScene = () => {
