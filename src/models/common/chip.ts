@@ -16,7 +16,7 @@ class Chip extends Phaser.GameObjects.Image {
     GOText: Text; //Textオブジェクト
     #text: string; //ボタン上に表示するテキスト
 
-    #clickSound: Phaser.Sound.BaseSound | undefined;
+    clickSound: Phaser.Sound.BaseSound;
 
     /**
      *
@@ -44,6 +44,10 @@ class Chip extends Phaser.GameObjects.Image {
 
         Phaser.Display.Align.In.Center(this.GOText, this);
         this.setDisplaySize(120, 100);
+
+        this.clickSound = this.scene.sound.add("clickChip", {
+            volume: 1
+        });
 
         this.setInteractive();
         this.setDataEnabled();
@@ -79,7 +83,7 @@ class Chip extends Phaser.GameObjects.Image {
         this.on(
             'pointerdown',
             () => {
-                if (this.#clickSound) this.#clickSound.play();
+                this.clickSound.play();
                 handler();
             },
             this,

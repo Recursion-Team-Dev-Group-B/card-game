@@ -6,18 +6,24 @@ class Card extends Phaser.GameObjects.Image {
   #texture: string;
   #faceDown = false;
 
+  dealCardSound: Phaser.Sound.BaseSound;
+
   constructor(
     scene: Phaser.Scene,
     suit: string,
     rank: string,
     texture: string,
   ) {
-    super(scene, 10, 10, texture);
-    // scene.add.existing(this);
+    super(scene, 0, -1000, texture);
+    scene.add.existing(this);
     this.scene = scene;
     this.#suit = suit;
     this.#rank = rank;
     this.#texture = texture;
+
+    this.dealCardSound = this.scene.sound.add("dealCard", {
+      volume: 1
+    });
   }
 
   // suitのgetter
@@ -44,13 +50,26 @@ class Card extends Phaser.GameObjects.Image {
  * カードを裏返すアニメーションを再生。
  * アニメーション完了後、カードの表面に更新する。
  */
-  playFlipOverTween(): void {
+  playFlipOverTween(Card: any): void {
     console.log(this)
     this.scene.add.tween({
       targets: this,
       scaleX: 0,
-      duration: 4000,
+      duration: 500,
       ease: 'Linear',
+      onComplete: () => {
+        // アニメーション完了後に実行するコールバック関数を追加
+        // this.setFaceUp();
+        // this.#flipOverSound.play();
+        // Card.show()
+        this.scene.tweens.add({
+          targets: Card,
+          scaleX: 1,
+          duration: 500,
+          delay: 1000,
+          ease: 'Linear'
+        });
+      }
     });
     // this.scene.add.existing(this);
 
@@ -77,6 +96,23 @@ class Card extends Phaser.GameObjects.Image {
     //     });
     //   }
     // });
+  }
+
+
+  /**
+ * カードを新しい位置に移動するアニメーション
+ * @param toX 移動先のx座標
+ * @param toY 移動先のy座標
+ */
+  moveTween(toX: number, toY: number): void {
+    this.dealCardSound.play();
+    this.scene.tweens.add({
+      targets: this,
+      x: toX,
+      y: toY,
+      duration: 500,
+      ease: 'Linear'
+    });
   }
 
   // 非表示にする

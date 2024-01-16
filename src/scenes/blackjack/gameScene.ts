@@ -193,16 +193,12 @@ class BlackjackScene extends BaseGameScene {
     if (isCardFaceUp) {
       card
         .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
-        .setX(x)
-        .setY(y);
-      this.add.existing(card);
+      card.moveTween(x, y)
     } else {
-      this.backCard = this.add.image(0, 0, 'back_card');
+      this.backCard = new Card(this, "", "", 'back_card');
       this.backCard
         .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
-        .setX(x)
-        .setY(y);
-      this.add.existing(this.backCard);
+      this.backCard.moveTween(x, y)
     }
   }
 
@@ -422,13 +418,22 @@ class BlackjackScene extends BaseGameScene {
     const house = this.players[1];
     const houseHandZone = this.handZones[1];
     const Card = house.hand[1];
-    this.backCard
-      .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
+    // this.backCard
+    //   .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
+    //   .setX(houseHandZone.x + 10)
+    //   .setY(houseHandZone.y);
+
+    Card.setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
       .setX(houseHandZone.x + 10)
       .setY(houseHandZone.y);
-    console.log(this.backCard)
-    console.log(typeof this.backCard)
-    this.backCard.playFlipOverTween()
+    this.add.existing(Card);
+
+    // this.backCard.playFlipOverTween(Card)
+
+    // .setX(houseHandZone.x + 100)
+    // .setY(houseHandZone.y);
+    // Card.playFlipOverTween()
+
 
     // house.hand.forEach((card) => {
     //   if (card.isFaceDown) {
@@ -477,8 +482,6 @@ class BlackjackScene extends BaseGameScene {
   }
 
   private endGame(result: any) {
-    console.log('END GAME');
-    console.log(result);
     this.displayResult(result);
     this.settleChips(result);
     this.input.once(
