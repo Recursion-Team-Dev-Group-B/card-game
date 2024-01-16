@@ -8,18 +8,11 @@ const config: Phaser.Types.Core.GameConfig = {
     type: Phaser.AUTO,
     backgroundColor: '#000000',
     parent: 'blackjackGame',
+    width: window.innerWidth,
     scale: {
         mode: Phaser.Scale.FIT,
         parent: 'blackjackGame',
         autoCenter: Phaser.Scale.CENTER_BOTH,
-        min: {
-            width: 720,
-            height: 345,
-        },
-        max: {
-            width: 1920,
-            height: 1220,
-        },
     },
     scene: [LoadingScene, StackScene, BlackjackScene],
 }
