@@ -107,6 +107,7 @@ class LoadingScene extends Phaser.Scene {
     // 効果音をロード
     this.load.audio("clickChip", "game/blackjack/sound/clickChip.wav")
     this.load.audio("dealCard", "game/blackjack/sound/dealCard.mp3")
+    this.load.audio("clickButton", "game/blackjack/sound/clickButton.mp3")
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;

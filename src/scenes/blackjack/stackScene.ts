@@ -133,38 +133,26 @@ class StackScene extends BaseGameScene {
   }
 
   private displayDealButton(): void {
-    this.dealButton = new Button(this, 0, 350, 'button', 'Deal');
+    this.dealButton = new Button(this, this.width / 2 + 150, this.height / 2 + 150, 'button', 'Deal');
     this.dealButton.hide();
-    this.dealButton.setClickHandler(() => {
+    this.dealButton.clickHandler(() => {
       if (this.bet) {
         this.scene.start('blackjackGame');
       }
     });
-    Phaser.Display.Align.In.Center(
-      this.dealButton,
-      this.gameZone as Zone,
-      0,
-      200,
-    );
     Phaser.Display.Align.In.Center(this.dealButton.GOText, this.dealButton);
   }
 
   private displayResetButton(): void {
-    this.resetButton = new Button(this, 0, 350, 'button', 'Reset');
+    this.resetButton = new Button(this, this.width / 2 - 150, this.height / 2 + 150, 'button', 'Reset');
     this.resetButton.hide();
 
-    this.resetButton.setClickHandler(() => {
+    this.resetButton.clickHandler(() => {
       if (this.bet) {
         this.resetBet();
         this.dealButton.hide();
       }
     });
-    Phaser.Display.Align.In.Center(
-      this.resetButton,
-      this.gameZone as Zone,
-      -200,
-      200,
-    );
     Phaser.Display.Align.In.Center(this.resetButton.GOText, this.resetButton);
   }
 

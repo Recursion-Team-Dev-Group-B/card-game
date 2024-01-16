@@ -16,7 +16,7 @@ class Button extends Phaser.GameObjects.Image {
   GOText: Text; //Textオブジェクト
   #text: string; //ボタン上に表示するテキスト
 
-  #clickSound: Phaser.Sound.BaseSound | undefined;
+  clickSound: Phaser.Sound.BaseSound | undefined;
 
   /**
    *
@@ -43,7 +43,11 @@ class Button extends Phaser.GameObjects.Image {
     scene.add.existing(this.GOText);
 
     Phaser.Display.Align.In.Center(this.GOText, this);
-    this.setDisplaySize(120, 100);
+    this.setDisplaySize(150, 100);
+
+    this.clickSound = this.scene.sound.add("clickButton", {
+      volume: 1
+    });
 
     this.setInteractive();
     this.setDataEnabled();
@@ -75,12 +79,12 @@ class Button extends Phaser.GameObjects.Image {
     );
   }
 
-  setClickHandler(pushHandler: () => void): void {
+  clickHandler(handler: () => void): void {
     this.on(
       'pointerdown',
       () => {
-        if (this.#clickSound) this.#clickSound.play();
-        pushHandler();
+        if (this.clickSound) this.clickSound.play();
+        handler();
       },
       this,
     );

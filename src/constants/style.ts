@@ -1,6 +1,6 @@
 const STYLE = {
   TEXT: {
-    font: '24px Arial',
+    font: '36px Arial',
     color: '#000000',
     // stroke: '#000000',
     strokeThickness: 2,
@@ -30,7 +30,7 @@ const STYLE = {
   },
   GUTTER_SIZE: 20,
   CHIPS: {
-    font: '24px Arial',
+    font: '36px Arial',
     color: '#FFFFFF',
     strokeThickness: 2,
   },
