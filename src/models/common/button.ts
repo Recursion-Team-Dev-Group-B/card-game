@@ -23,7 +23,7 @@ class Button extends Phaser.GameObjects.Image {
    * @param scene
    * @param x
    * @param y
-   * @param texture
+   * @param texture GameObjectを表すキー
    * @param text Textオブジェクトが表示する文字列
    * @param textStyle
    */
@@ -43,7 +43,7 @@ class Button extends Phaser.GameObjects.Image {
     scene.add.existing(this.GOText);
 
     Phaser.Display.Align.In.Center(this.GOText, this);
-    this.setDisplaySize(120, 70);
+    this.setDisplaySize(120, 100);
 
     this.setInteractive();
     this.setDataEnabled();
