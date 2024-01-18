@@ -2,28 +2,20 @@
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import Storage from '@/utils/storage';
-const DynamicComponentWithNoSSR = dynamic(
-  () => import('@/scenes/blackjack/gameScene'),
-  {
-    ssr: false,
-  },
-);
-
-const storage = new Storage();
 
 const Page = () => {
-  const [loading, setLoading] = useState(false);
   useEffect(() => {
-    setLoading(true);
-    // storage.set('chips', 1000);
+    (async () => {
+      const Phaser = await import('phaser');
+      const config = (await import('@/app/blackjack/config')).default;
+      const game = new Phaser.Game(config);
+
+      return () => {
+        game.destroy(true);
+      };
+    })();
   }, []);
-  return (
-    <div>
-      <div id="blackjackGame">
-        {loading ? <DynamicComponentWithNoSSR /> : null}
-      </div>
-    </div>
-  );
+  return <div id="blackjackGame"></div>;
 };
 
 export default Page;

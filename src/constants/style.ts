@@ -1,7 +1,7 @@
 const STYLE = {
   TEXT: {
-    font: '24px Arial',
-    color: '#FFFFFF',
+    font: '36px Arial',
+    color: '#000000',
     // stroke: '#000000',
     strokeThickness: 2,
   },
@@ -10,7 +10,7 @@ const STYLE = {
     color: '#FFFFFF',
   },
   PLAYER_NAME: {
-    font: '24px Arial',
+    font: '36px Arial',
     strokeThickness: 2,
     fontStyle: 'strong',
     padding: {
@@ -30,7 +30,7 @@ const STYLE = {
   },
   GUTTER_SIZE: 20,
   CHIPS: {
-    font: '24px Arial',
+    font: '36px Arial',
     color: '#FFFFFF',
     strokeThickness: 2,
   },

@@ -33,8 +33,6 @@ class BaseGameScene extends Phaser.Scene {
     this.setChips();
   }
 
-  preload() {}
-
   create(gameTitle: string) {
     this.initGame(gameTitle);
     this.placeTableImage();
@@ -60,8 +58,8 @@ class BaseGameScene extends Phaser.Scene {
   }
 
   initGame(gameTitle: string): void {
-    this.width = Number(this.game.canvas.width);
-    this.height = Number(this.game.canvas.height);
+    this.width = this.sys.game.canvas.width
+    this.height = this.sys.game.canvas.height
 
     // Blackjackプレイヤー作成
     if (gameTitle == 'blackjackGame') {
@@ -74,12 +72,11 @@ class BaseGameScene extends Phaser.Scene {
 
   // Blackjackのテーブル画像を配置
   placeTableImage(): void {
-    // スケールを計算（目的の横幅 / 元の画像の横幅）
-    this.tableImage = this.add.image(0, 0, 'blackjackTable').setOrigin(0);
-    // スケールを計算（目的の横幅 / 元の画像の横幅）
-    const scale = this.width / this.tableImage.width;
-    // 計算したスケールを適用
-    this.tableImage.setScale(scale);
+    const table = this.add.image(this.width / 2, this.height / 2, 'blackjackTable')
+    const tableScaleX = this.width / table.width
+    const tableScaleY = this.height / table.height
+    const tableScale = Math.max(tableScaleX, tableScaleY)
+    table.setScale(tableScale)
   }
 
   private createTextObj() {
@@ -96,7 +93,7 @@ class BaseGameScene extends Phaser.Scene {
 
   // Chip(持っているお金)とBet(賭けたお金)を表示するZoneを作成
   createChipsAndBetZone(): void {
-    this.chipBetZone = this.add.zone(0, 0, 400, 70).setOrigin(0);
+    this.chipBetZone = this.add.zone(0, 0, 400, 100).setOrigin(0);
 
     Phaser.Display.Align.In.BottomCenter(
       this.chipBetZone as Zone,
@@ -104,20 +101,6 @@ class BaseGameScene extends Phaser.Scene {
       300,
       0,
     );
-
-    // のちのち returnの手前まで削除。
-    // Zoneがどの範囲か分かるように記載
-    // Graphics オブジェクトの作成
-    // const graphics = this.add.graphics();
-    // // 枠線のスタイルを設定
-    // graphics.lineStyle(5, 0x00ff00, 1);
-    // // Zone の位置とサイズに合わせて枠線を描画
-    // graphics.strokeRect(
-    //   this.chipBetZone.x,
-    //   this.chipBetZone.y,
-    //   this.chipBetZone.width,
-    //   this.chipBetZone.height,
-    // );
   }
 
   protected setChipsText(): void {
@@ -135,7 +118,7 @@ class BaseGameScene extends Phaser.Scene {
       this.bet as Text,
       this.chips as Text,
       0,
-      0,
+      5,
     );
   }
 

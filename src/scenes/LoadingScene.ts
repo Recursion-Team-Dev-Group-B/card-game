@@ -35,7 +35,9 @@ class LoadingScene extends Phaser.Scene {
 
   preload() {
     // テーブル画像をロード
-    this.load.image('blackjackTable', '/game/blackjack/blackjackTable.jpeg');
+    // this.load.image('blackjackTable', '/game/blackjack/blackjackTable.jpeg');
+    this.load.image('blackjackTable', '/game/blackjack/blackjackTable.png');
+    // トランプカードをロード
     this.load.image('club_A', '/game/common/images/cards/club_A.png');
     this.load.image('club_2', '/game/common/images/cards/club_2.png');
     this.load.image('club_3', '/game/common/images/cards/club_3.png');
@@ -45,6 +47,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('club_7', '/game/common/images/cards/club_7.png');
     this.load.image('club_8', '/game/common/images/cards/club_8.png');
     this.load.image('club_9', '/game/common/images/cards/club_9.png');
+    this.load.image('club_10', '/game/common/images/cards/club_10.png');
     this.load.image('club_J', '/game/common/images/cards/club_J.png');
     this.load.image('club_Q', '/game/common/images/cards/club_Q.png');
     this.load.image('club_K', '/game/common/images/cards/club_K.png');
@@ -57,6 +60,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('diamond_7', '/game/common/images/cards/diamond_7.png');
     this.load.image('diamond_8', '/game/common/images/cards/diamond_8.png');
     this.load.image('diamond_9', '/game/common/images/cards/diamond_9.png');
+    this.load.image('diamond_10', '/game/common/images/cards/diamond_10.png');
     this.load.image('diamond_J', '/game/common/images/cards/diamond_J.png');
     this.load.image('diamond_Q', '/game/common/images/cards/diamond_Q.png');
     this.load.image('diamond_K', '/game/common/images/cards/diamond_K.png');
@@ -69,6 +73,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('heart_7', '/game/common/images/cards/heart_7.png');
     this.load.image('heart_8', '/game/common/images/cards/heart_8.png');
     this.load.image('heart_9', '/game/common/images/cards/heart_9.png');
+    this.load.image('heart_10', '/game/common/images/cards/heart_10.png');
     this.load.image('heart_J', '/game/common/images/cards/heart_J.png');
     this.load.image('heart_Q', '/game/common/images/cards/heart_Q.png');
     this.load.image('heart_K', '/game/common/images/cards/heart_K.png');
@@ -81,11 +86,32 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('spade_7', '/game/common/images/cards/spade_7.png');
     this.load.image('spade_8', '/game/common/images/cards/spade_8.png');
     this.load.image('spade_9', '/game/common/images/cards/spade_9.png');
+    this.load.image('spade_10', '/game/common/images/cards/spade_10.png');
     this.load.image('spade_J', '/game/common/images/cards/spade_J.png');
     this.load.image('spade_Q', '/game/common/images/cards/spade_Q.png');
     this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
     this.load.image('back_card', '/game/common/images/cards/back_card.png');
+    // ボタンをロード
     this.load.image('button', '/game/common/button/button.png');
+    // チップをロード
+    this.load.image('chipBlack', '/game/common/chip/chipBlack.png');
+    this.load.image('chipBlue', '/game/common/chip/chipBlue.png');
+    this.load.image('chipBrown', '/game/common/chip/chipBrown.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipGray', '/game/common/chip/chipGray.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipOrange', '/game/common/chip/chipOrange.png');
+    this.load.image('chipPink', '/game/common/chip/chipPink.png');
+    this.load.image('chipPurple', '/game/common/chip/chipPurple.png');
+    this.load.image('chipRed', '/game/common/chip/chipRed.png');
+    this.load.image('chipYellow', '/game/common/chip/chipYellow.png');
+    // 効果音をロード
+    this.load.audio("clickChip", "game/blackjack/sound/clickChip.wav")
+    this.load.audio("dealCard", "game/blackjack/sound/dealCard.mp3")
+    this.load.audio("clickButton", "game/blackjack/sound/clickButton.mp3")
+    this.load.audio("win", "game/blackjack/sound/win.mp3")
+    this.load.audio("lose", "game/blackjack/sound/lose.mp3")
+
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;
@@ -111,19 +137,12 @@ class LoadingScene extends Phaser.Scene {
     });
     percentText.setOrigin(0.5, 0.5);
 
-    let progressBar = this.add.graphics();
-    let progressBox = this.add.graphics();
-    progressBox.fillStyle(0x222222, 0.8);
-    progressBox.fillRect(240, 270, 320, 50);
     this.load.on('progress', function (value: any) {
-      progressBar.clear();
-      progressBar.fillStyle(0xffffff, 1);
-      progressBar.fillRect(250, 280, 300 * value, 30);
       percentText.setText(parseInt((value * 100) as any) + '%');
     });
 
     this.load.on('complete', () => {
-      this.cameras.main.fadeOut(1000, 0, 0, 0, () => {});
+      this.cameras.main.fadeOut(1000, 0, 0, 0, () => { });
     });
   }
 
@@ -140,7 +159,7 @@ class LoadingScene extends Phaser.Scene {
     );
   }
 
-  update() {}
+  update() { }
 }
 
 export default LoadingScene;
