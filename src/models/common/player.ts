@@ -65,14 +65,14 @@ export abstract class Player {
   }
 
   // プレイヤーが獲得した賞金を取得
-  get getWinAmount(): number {
-    return this.winAmount;
-  }
+  // get getWinAmount(): number {
+  //   return this.winAmount;
+  // }
 
   // プレイヤーが獲得した賞金を設定する
-  set setWinAmount(winAmount: number) {
-    this.winAmount = winAmount;
-  }
+  // set setWinAmount(winAmount: number) {
+  //   this.winAmount = winAmount;
+  // }
 
   // プレイヤーが選択したアクションを取得
   // get getAction(): string {
@@ -80,9 +80,9 @@ export abstract class Player {
   // }
 
   // プレイヤーが選択したアクションを設定
-  set setAction(action: string) {
-    this.action = action;
-  }
+  // set setAction(action: string) {
+  //   this.action = action;
+  // }
 
   // 手札を空にする
   clearHand() {

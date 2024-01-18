@@ -1,7 +1,7 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import STYLE from '@/constants/style';
 
-import Text = Phaser.GameObjects.Text;
+type Text = Phaser.GameObjects.Text;
 
 const MOVE_TIME = 200;
 const FADE_TIME = 200;

@@ -1,5 +1,6 @@
-import LoadingScene from './LoadingScene';
-import { BettingScene } from './BettingScene';
-import { CardDistScene } from './CardDistScene';
+import { MainBetScene } from './MainBetScene';
+import { MainGameScene } from './MainGameScene';
+import { TieBetScene } from './TieBetScene';
+import { TieGameScene } from './TieGameScene';
 
-export const Scenes = [LoadingScene, BettingScene, CardDistScene];
+export const Scenes = [MainBetScene, MainGameScene, TieBetScene, TieGameScene];
