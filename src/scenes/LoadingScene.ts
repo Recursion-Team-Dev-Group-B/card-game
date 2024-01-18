@@ -91,6 +91,7 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('spade_Q', '/game/common/images/cards/spade_Q.png');
     this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
     this.load.image('back_card', '/game/common/images/cards/back_card.png');
+    // ボタンをロード
     this.load.image('button', '/game/common/button/button.png');
     // チップをロード
     this.load.image('chipBlack', '/game/common/chip/chipBlack.png');
@@ -108,6 +109,9 @@ class LoadingScene extends Phaser.Scene {
     this.load.audio("clickChip", "game/blackjack/sound/clickChip.wav")
     this.load.audio("dealCard", "game/blackjack/sound/dealCard.mp3")
     this.load.audio("clickButton", "game/blackjack/sound/clickButton.mp3")
+    this.load.audio("win", "game/blackjack/sound/win.mp3")
+    this.load.audio("lose", "game/blackjack/sound/lose.mp3")
+
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;

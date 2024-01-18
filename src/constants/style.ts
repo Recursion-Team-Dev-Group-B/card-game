@@ -10,7 +10,7 @@ const STYLE = {
     color: '#FFFFFF',
   },
   PLAYER_NAME: {
-    font: '24px Arial',
+    font: '36px Arial',
     strokeThickness: 2,
     fontStyle: 'strong',
     padding: {

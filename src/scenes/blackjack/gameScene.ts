@@ -48,12 +48,12 @@ class BlackjackScene extends BaseGameScene {
   standButton: Button | undefined;
   hitButton: Button | undefined;
   doubleButton: Button | undefined;
-  // Todo 別ファイルに記載
-  CARD_WIDTH = 100;
-  CARD_HEIGHT = 120;
-
   // カード
   backCard: any
+  // sound
+  endGameSound: Phaser.Sound.BaseSound | undefined;
+
+
 
   constructor() {
     super('blackjackGame');
@@ -91,7 +91,7 @@ class BlackjackScene extends BaseGameScene {
     this.players.forEach((player) => {
       const playerNameText = this.add.text(
         0,
-        300,
+        400,
         player.name,
         STYLE.PLAYER_NAME,
       );
@@ -101,21 +101,21 @@ class BlackjackScene extends BaseGameScene {
           playerNameText as Text,
           this.gameZone as Zone,
           0,
-          -30,
+          -50,
         );
       } else if (player.playerType === 'house') {
         Phaser.Display.Align.In.TopCenter(
           playerNameText as Text,
           this.gameZone as Zone,
           0,
-          -30,
+          -50,
         );
       } else if (player.playerType === 'cpu') {
         Phaser.Display.Align.In.TopCenter(
           playerNameText as Text,
           this.gameZone as Zone,
           0,
-          -30,
+          -50,
         );
       }
       this.playerNames.push(playerNameText);
@@ -133,21 +133,21 @@ class BlackjackScene extends BaseGameScene {
         Phaser.Display.Align.To.TopCenter(
           playerHandZone as Zone,
           this.playerNames[index],
-          0,
+          -15,
           10,
         );
       } else if (player.playerType === 'house') {
         Phaser.Display.Align.To.BottomCenter(
           playerHandZone as Zone,
           this.playerNames[index],
-          0,
+          -15,
           10,
         );
       } else if (player.playerType === 'cpu') {
         Phaser.Display.Align.To.BottomCenter(
           playerHandZone as Zone,
           this.playerNames[index],
-          0,
+          -15,
           10,
         );
       }
@@ -163,19 +163,19 @@ class BlackjackScene extends BaseGameScene {
     const houseHandZone = this.handZones[1];
 
     this.time.delayedCall(300, () => {
-      this.dealCard(player, playerHandZone.x - 10, playerHandZone.y);
+      this.dealCard(player, playerHandZone.x + player.getCardsNum() * 30, playerHandZone.y - 20);
     });
 
     this.time.delayedCall(600, () => {
-      this.dealCard(house, houseHandZone.x - 10, houseHandZone.y);
+      this.dealCard(house, houseHandZone.x + house.getCardsNum() * 30, houseHandZone.y + 20);
     });
 
     this.time.delayedCall(900, () => {
-      this.dealCard(player, playerHandZone.x + 10, playerHandZone.y);
+      this.dealCard(player, playerHandZone.x + player.getCardsNum() * 30, playerHandZone.y - 20);
     });
 
     this.time.delayedCall(1200, () => {
-      this.dealCard(house, houseHandZone.x + 10, houseHandZone.y, false);
+      this.dealCard(house, houseHandZone.x + house.getCardsNum() * 30, houseHandZone.y + 20, false);
       this.displayCardsScore(true);
     });
   }
@@ -190,15 +190,12 @@ class BlackjackScene extends BaseGameScene {
     if (!card) return;
 
     player.addCardToHand(card);
+    card.setDepth(player.getCardsNum())
     if (isCardFaceUp) {
-      card
-        .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
       card.moveTween(x, y)
     } else {
-      this.backCard = new Card(this, "", "", 'back_card');
-      this.backCard
-        .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
-      this.backCard.moveTween(x, y)
+      this.backCard = new Card(this, "", "", "back_card");
+      this.backCard.setDepth(player.getCardsNum()).moveTween(x, y)
     }
   }
 
@@ -206,7 +203,7 @@ class BlackjackScene extends BaseGameScene {
     // NOTE: 前回のゲームで作成したものが残っている可能性があるので、初期化する
     this.playerScoreTexts = [];
     this.players.forEach((player, index) => {
-      const playerScoreText = this.add.text(0, 200, '', STYLE.TEXT);
+      const playerScoreText = this.add.text(0, 0, '', STYLE.TEXT);
 
       if (player.playerType === 'player') {
         Phaser.Display.Align.To.TopCenter(
@@ -238,7 +235,7 @@ class BlackjackScene extends BaseGameScene {
           playerScoreText as Text,
           this.handZones[index] as Zone,
           0,
-          10,
+          50,
         );
       }
 
@@ -249,7 +246,7 @@ class BlackjackScene extends BaseGameScene {
             playerScoreText as Text,
             this.handZones[index] as Zone,
             0,
-            10,
+            50,
           );
         }
       }
@@ -272,20 +269,20 @@ class BlackjackScene extends BaseGameScene {
   }
 
   private createHitButton(): Button {
-    const hitButton = new Button(this, 0, 350, 'button', 'Hit');
-    hitButton.setClickHandler(() => this.handleHit());
+    const hitButton = new Button(this, 0, this.height / 2, 'button', 'Hit');
+    hitButton.clickHandler(() => this.handleHit());
     return hitButton;
   }
 
   private createStandButton(): Button {
-    const standButton = new Button(this, 0, 350, 'button', 'Stand');
-    standButton.setClickHandler(() => this.handleStand());
+    const standButton = new Button(this, 0, this.height / 2, 'button', 'Stand');
+    standButton.clickHandler(() => this.handleStand());
     return standButton;
   }
 
   private createDoubleButton(): Button {
-    const doubleButton = new Button(this, 0, 350, 'button', 'Double');
-    doubleButton.setClickHandler(() => this.handleDouble());
+    const doubleButton = new Button(this, 0, this.height / 2, 'button', 'Double');
+    doubleButton.clickHandler(() => this.handleDouble());
     return doubleButton;
   }
 
@@ -297,9 +294,8 @@ class BlackjackScene extends BaseGameScene {
 
     this.dealCard(
       player,
-      playerHandZone.x +
-      this.CARD_WIDTH * (player.getCardsNum() * 0.3 - 0.15),
-      playerHandZone.y,
+      playerHandZone.x + player.getCardsNum() * 30,
+      playerHandZone.y - 20,
     );
     this.displayCardsScore(true);
 
@@ -325,7 +321,7 @@ class BlackjackScene extends BaseGameScene {
       player.gameStatus = 'stand';
     }
 
-    this.time.delayedCall(1000, () => this.drawCardsUntil17());
+    this.time.delayedCall(800, () => this.drawCardsUntil17());
   }
 
   private isBlackjack(player: BlackjackPlayer): boolean {
@@ -360,9 +356,8 @@ class BlackjackScene extends BaseGameScene {
         house.gameStatus = 'hit';
         this.dealCard(
           house,
-          houseHandZone.x +
-          this.CARD_WIDTH * (house.getCardsNum() * 0.3 - 0.15),
-          houseHandZone.y,
+          houseHandZone.x + house.getCardsNum() * 30,
+          houseHandZone.y + 20,
         );
         this.displayCardsScore(false);
       },
@@ -380,8 +375,7 @@ class BlackjackScene extends BaseGameScene {
 
     this.dealCard(
       player,
-      playerHandZone.x +
-      this.CARD_WIDTH * (player.getCardsNum() * 0.3 - 0.15),
+      playerHandZone.x + player.getCardsNum() * 30,
       playerHandZone.y,
     );
 
@@ -417,29 +411,17 @@ class BlackjackScene extends BaseGameScene {
   private turnOverCard(): void {
     const house = this.players[1];
     const houseHandZone = this.handZones[1];
-    const Card = house.hand[1];
-    // this.backCard
-    //   .setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
-    //   .setX(houseHandZone.x + 10)
-    //   .setY(houseHandZone.y);
+    const card = house.hand[1];
 
-    Card.setDisplaySize(this.CARD_WIDTH, this.CARD_HEIGHT)
-      .setX(houseHandZone.x + 10)
-      .setY(houseHandZone.y);
-    this.add.existing(Card);
-
-    // this.backCard.playFlipOverTween(Card)
-
-    // .setX(houseHandZone.x + 100)
-    // .setY(houseHandZone.y);
-    // Card.playFlipOverTween()
+    this.backCard.hide()
+    card
+      .setX(this.backCard.x)
+      .setY(this.backCard.y);
 
 
-    // house.hand.forEach((card) => {
-    //   if (card.isFaceDown) {
-    //     card.playFlipOverTween();
-    //   }
-    // });
+    /*  TODO カードをひっくり返すアニメーション実施
+    this.backCard.playFlipOverTween(card)
+    */
   }
 
   private judgeGameResult(): GameResult {
@@ -451,11 +433,17 @@ class BlackjackScene extends BaseGameScene {
     this.gameStatus = GameStatus.END_OF_GAME;
 
     if (player.gameStatus === 'bust') {
+      this.endGameSound = this.sound.add("lose", {
+        volume: 1
+      });
       return GameResult.BUST;
     }
 
     if (player.gameStatus === 'blackjack') {
       if (house.gameStatus !== 'blackjack') {
+        this.endGameSound = this.sound.add("win", {
+          volume: 1
+        });
         return GameResult.BLACKJACK;
       }
       return GameResult.PUSH;
@@ -463,6 +451,9 @@ class BlackjackScene extends BaseGameScene {
 
     if (player.gameStatus === 'stand') {
       if (house.gameStatus === 'bust' || playerHandScore > houseHandScore) {
+        this.endGameSound = this.sound.add("win", {
+          volume: 1
+        });
         return GameResult.WIN;
       }
 
@@ -470,6 +461,9 @@ class BlackjackScene extends BaseGameScene {
         house.gameStatus === 'blackjack' ||
         houseHandScore > playerHandScore
       ) {
+        this.endGameSound = this.sound.add("lose", {
+          volume: 1
+        });
         return GameResult.LOSS;
       }
 
@@ -477,13 +471,16 @@ class BlackjackScene extends BaseGameScene {
         return GameResult.PUSH;
       }
     }
-
     return GameResult.SURRENDER;
   }
 
   private endGame(result: any) {
     this.displayResult(result);
     this.settleChips(result);
+    if (this.endGameSound) {
+      this.endGameSound.play()
+    }
+
     this.input.once(
       'pointerdown',
       () => {
@@ -497,7 +494,7 @@ class BlackjackScene extends BaseGameScene {
   private displayResult(result: string) {
     const resultText = this.add.text(0, 0, result, STYLE.TEXT);
 
-    Phaser.Display.Align.In.BottomCenter(
+    Phaser.Display.Align.In.Center(
       resultText,
       this.gameZone as Zone,
       0,

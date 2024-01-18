@@ -93,7 +93,7 @@ class BaseGameScene extends Phaser.Scene {
 
   // Chip(持っているお金)とBet(賭けたお金)を表示するZoneを作成
   createChipsAndBetZone(): void {
-    this.chipBetZone = this.add.zone(0, 0, 700, 100).setOrigin(0);
+    this.chipBetZone = this.add.zone(0, 0, 400, 100).setOrigin(0);
 
     Phaser.Display.Align.In.BottomCenter(
       this.chipBetZone as Zone,
@@ -101,20 +101,6 @@ class BaseGameScene extends Phaser.Scene {
       300,
       0,
     );
-
-    // のちのち returnの手前まで削除。
-    // Zoneがどの範囲か分かるように記載
-    // Graphics オブジェクトの作成
-    // const graphics = this.add.graphics();
-    // // 枠線のスタイルを設定
-    // graphics.lineStyle(5, 0x00ff00, 1);
-    // // Zone の位置とサイズに合わせて枠線を描画
-    // graphics.strokeRect(
-    //   this.chipBetZone.x,
-    //   this.chipBetZone.y,
-    //   this.chipBetZone.width,
-    //   this.chipBetZone.height,
-    // );
   }
 
   protected setChipsText(): void {
