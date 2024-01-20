@@ -1,14 +1,25 @@
-import Link from 'next/link';
+'use client';
+import React, { useState } from 'react';
+import CardFlip from '@/components/CardFlip';
 
 export default function Home() {
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const flipCard = () => {
+    setIsFlipped(!isFlipped);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        ホーム画面
+    <main className="flex min-h-screen flex-col items-center p-12 bg-[url('/game/blackjack/blackjackTable.webp')]">
+      <h1 className="text-4xl font-bold border-white text-gray-900">
+        Select Card Game
+      </h1>
+      <div className="flex flex-wrap justify-center">
+        <CardFlip gameName="blackjack" />
+        <CardFlip gameName="poker" />
+        <CardFlip gameName="speed" />
+        <CardFlip gameName="war" />
       </div>
-      <Link href="/blackjack">Blackjackで遊ぶ</Link>
-      {/* warのフォルダに飛ばす*/}
-      <Link href="/war">Warで遊ぶ</Link>
     </main>
   );
 }

@@ -35,8 +35,8 @@ class LoadingScene extends Phaser.Scene {
 
   preload() {
     // テーブル画像をロード
-    // this.load.image('blackjackTable', '/game/blackjack/blackjackTable.jpeg');
-    this.load.image('blackjackTable', '/game/blackjack/blackjackTable.png');
+    this.load.image('blackjackTable', '/game/blackjack/blackjackTable.webp');;
+    // this.load.image('blackjackTable', '/game/blackjack/blackjackTable.png');
     // トランプカードをロード
     this.load.image('club_A', '/game/common/images/cards/club_A.png');
     this.load.image('club_2', '/game/common/images/cards/club_2.png');
