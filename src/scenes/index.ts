@@ -29,6 +29,7 @@ const Index = () => {
 
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.AUTO,
+      mode: Phaser.Scale.FIT,
       width: 800,
       height: 600,
       parent: 'game-app', // #game-app内にcanvasを生成
