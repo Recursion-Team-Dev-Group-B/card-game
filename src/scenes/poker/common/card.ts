@@ -5,7 +5,7 @@ export default class Card extends Phaser.GameObjects.Image {
   readonly suit: string;
   readonly rank: string;
   //private texture: string;
-  private texture: any;
+  public texture: any;
   private backTexture: any;
   private faceDown = false;
 
@@ -102,23 +102,23 @@ export default class Card extends Phaser.GameObjects.Image {
   tweenFlip() {
     //this.setInteractive();
     //this.on('pointerdown', () => {
-      this.scene.tweens.add({
-        targets: this,
-        scaleX: 0,
-        duration: 150,
-        ease: 'Linear',
-        onComplete: (): void => {
-          this.setTexture(`${this.suit}_${this.rank}`);
-          this.setScale(0.13);
-          this.scene.tweens.add({
-            targets: this,
-            scaleX: 0.13,
-            //scaleY: 0.13,
-            duration: 350,
-            ease: 'Linear'
-          })
-        }
-      })
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 0,
+      duration: 150,
+      ease: 'Linear',
+      onComplete: (): void => {
+        this.setTexture(`${this.suit}_${this.rank}`);
+        this.setScale(0.13);
+        this.scene.tweens.add({
+          targets: this,
+          scaleX: 0.13,
+          //scaleY: 0.13,
+          duration: 350,
+          ease: 'Linear'
+        })
+      }
+    })
 
 
     //})

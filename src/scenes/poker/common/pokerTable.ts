@@ -1135,7 +1135,8 @@ export default class PokerTable {
     async waitForActionProcess(currentPlayer: PokerPlayer | PokerAI) {
         if (currentPlayer.isActive === true && currentPlayer.action != 'allin') {
 
-            if (currentPlayer.playerType === 'ai') {
+            if (currentPlayer.playerType === 'ai' && currentPlayer instanceof PokerAI) {
+
                 const lastAction = this.getLastAction();
                 const action = currentPlayer.chooseAction(this.roundBet, lastAction);
 
@@ -1906,7 +1907,8 @@ export default class PokerTable {
 
     // 配列に対応したカードを配るアニメーション
     async animateDealingTypeArray(cards: Array<Card | undefined>, startX: number, y: number, spacing: number) {
-        const width = cards[0] ?.displayWidth ;
+        const width = cards[0]!.displayWidth;
+
         for (let index in cards) {
             this.scene.tweens.add({
                 targets: cards[index],
@@ -1936,9 +1938,12 @@ export default class PokerTable {
         this.sounds.cardFlip.play();
     }
 
-    // ディーラーの処理 - 表示
-    // 0円でオールインできる -gemeOverの判定がおかしい
-    // anteが一周する前に増える
+
+    createHomeButton() {
+        const homeButton = this.scene.add.image(0, 0, 'button_home').setOrigin(0.5, 0.5);
+        this.scene.add.existing(homeButton);
+    }
+
     // デッキの再生成
 
     /* 見た目 */

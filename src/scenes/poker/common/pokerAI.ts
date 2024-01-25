@@ -49,6 +49,7 @@ export default class PokerAI extends Player {
         } else if (lastAction === '') {
             return 'bet';
         }
+        return '';
     }
 
     /*
