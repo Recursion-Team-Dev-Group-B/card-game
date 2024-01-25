@@ -1893,7 +1893,7 @@ export default class PokerTable {
     // animation
     // カードを配るアニメーション
     async animateDealing(card: Card, startX: number, y: number, spacing: number, index: number) {
-        const width = card ?.displayWidth ;
+        const width = card.displayWidth;
         const x = startX + index * (width + spacing);
         this.scene.tweens.add({
             targets: card,
