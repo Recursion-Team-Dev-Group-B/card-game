@@ -376,7 +376,7 @@ class BlackjackScene extends BaseGameScene {
     this.dealCard(
       player,
       playerHandZone.x + player.getCardsNum() * 30,
-      playerHandZone.y,
+      playerHandZone.y - 20,
     );
 
     this.handleStand();
