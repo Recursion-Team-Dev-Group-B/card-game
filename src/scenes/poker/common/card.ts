@@ -5,7 +5,7 @@ export default class Card extends Phaser.GameObjects.Image {
   readonly suit: string;
   readonly rank: string;
   //private texture: string;
-  private texture: any;
+  #texture: any;
   private backTexture: any;
   private faceDown = false;
 
@@ -20,7 +20,7 @@ export default class Card extends Phaser.GameObjects.Image {
     this.scene = scene;
     this.suit = suit;
     this.rank = rank;
-    this.texture = texture;
+    this.#texture = texture;
     //this.backTexture = this.scene.add.sprite(this.x, this.y, 'backCard');
   }
 
