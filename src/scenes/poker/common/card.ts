@@ -1,11 +1,11 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import config from '@/scenes/poker/common/config';
 export default class Card extends Phaser.GameObjects.Image {
   // カードはsuit（スペード、ハート、ダイヤモンド、クラブ）、rank（A、2-10、JQK）、裏表のプロパティを持つものとする。
   readonly suit: string;
   readonly rank: string;
   //private texture: string;
-  public texture: any;
+  texture: any;
   private backTexture: any;
   private faceDown = false;
 

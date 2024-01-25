@@ -1,4 +1,4 @@
-// エラーのため　import Phaser from 'phaser';　を修正。
+// エラーのため　import * as Phaser from 'phaser';　を修正。
 import * as Phaser from 'phaser';
 
 class Card extends Phaser.GameObjects.Image {

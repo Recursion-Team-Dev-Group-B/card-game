@@ -1,5 +1,5 @@
 /* eslint no-underscore-dangle: 0 */
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import GAME from '@/constants/game';
 import Card from './card';
 

@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 import STYLE from '@/constants/style';
 
 import Text = Phaser.GameObjects.Text;

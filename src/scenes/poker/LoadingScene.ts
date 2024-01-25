@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import * as Phaser from 'phaser';
 
 // model, class
 import Deck from '@/models/common/deck';

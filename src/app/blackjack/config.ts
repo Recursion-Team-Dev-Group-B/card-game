@@ -1,4 +1,4 @@
-import Phaser from 'phaser'
+import * as Phaser from 'phaser'
 import BaseGameScene from '@/scenes/BaseGameScene';
 import StackScene from '@/scenes/blackjack/stackScene';
 import BlackjackScene from '@/scenes/blackjack/gameScene';
