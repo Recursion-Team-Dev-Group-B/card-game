@@ -71,5 +71,6 @@ export const soundAssets = [
     { key: 'lose_sound', path: '/game/war/sound/lose.mp3' },
     { key: 'draw_sound', path: '/game/war/sound/positive_draw.mp3' },
     { key: 'wrong_sound', path: '/game/war/sound/wrong_action.mp3' },
-    { key: 'coinDrop_sound', path: '/game/war/sound/coin_drop.mp3' }
+    { key: 'coinDrop_sound', path: '/game/war/sound/coin_drop.mp3' },
+    { key: "dealCard", path: "game/blackjack/sound/dealCard.mp3" }
 ];

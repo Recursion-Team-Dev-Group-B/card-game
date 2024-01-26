@@ -284,7 +284,7 @@ export class TieGameScene extends Phaser.Scene {
         zone_no.on('pointerdown', () => {
           this.sound.play('tap_sound'); // クリック時の効果音
           // ローカルホストで仮に設定しておく
-          window.location.href = 'http://localhost:3001/';
+          window.location.href = './';
         });
       });
     }

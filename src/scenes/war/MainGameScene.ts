@@ -204,7 +204,7 @@ export class MainGameScene extends Phaser.Scene {
         // Noをクリックしたら初期画面に遷移
         zone_no.on('pointerdown', () => {
           this.sound.play('tap_sound');
-          window.location.href = 'http://localhost:3001/'; // ローカルホストで仮に設定しておく
+          window.location.href = './';
         });
       });
     }
