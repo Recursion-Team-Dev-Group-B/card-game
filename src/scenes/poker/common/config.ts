@@ -1,7 +1,5 @@
 const phaserCoonfigWidth: number = window.innerWidth;
 const phaserConfigHeight: number = window.innerHeight;
-//const phaserCoonfigWidth: number = 1200;
-//const phaserConfigHeight: number =  800;
 
 const divisionRows: number = 12;
 

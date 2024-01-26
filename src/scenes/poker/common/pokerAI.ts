@@ -31,8 +31,6 @@ export default class PokerAI extends Player {
     }
 
     chooseAction(roundBet: number, lastAction: string) {
-        console.log('AI---chooseAction');
-
         if (
             lastAction === 'bet' ||
             lastAction === 'raise' ||
@@ -51,19 +49,5 @@ export default class PokerAI extends Player {
         }
         return '';
     }
-
-    /*
-    betValue(roundBet: number, action: string) {
-        if (action === 'bet') {
-            if (this.chips > roundBet) {
-                return roundBet;
-            }
-        } else if (action === 'raise') {
-            if (this.chips > roundBet * 2) {
-                return roundBet;
-            }
-        }
-    }
-    */
 
 }

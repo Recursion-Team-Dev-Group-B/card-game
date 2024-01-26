@@ -3,16 +3,6 @@ import Card from "@/scenes/poker/common/card";
 
 export default class PokerPlayer extends Player {
 
-    /*
-    public name: string;
-    public playerType: string;
-    public gameType: string;
-    public chips: number;
-    public winAmount: number;
-    public bet: number;
-    public action: string;
-    */
-    // ここまでエラー表示
     public hand: Array<Card> = [];
     public dealer: boolean;
     public handRank: number;

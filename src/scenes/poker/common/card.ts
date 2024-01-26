@@ -16,12 +16,10 @@ export default class Card extends Phaser.GameObjects.Image {
     texture: string,
   ) {
     super(scene, 10, 10, texture);
-    // scene.add.existing(this);
     this.scene = scene;
     this.suit = suit;
     this.rank = rank;
     this.texture = texture;
-    //this.backTexture = this.scene.add.sprite(this.x, this.y, 'backCard');
   }
 
   // suitのgetter
@@ -74,34 +72,11 @@ export default class Card extends Phaser.GameObjects.Image {
     this.setTexture('backCard');
     this.setScale(0.65);
     this.faceDown = true;
-    /*
-    this.on('pointerdown', () => {
-      this.flip();
-    })
-    */
   }
 
-  open() {
-    this.on('pointerdown', () => {
-      this.setTexture(`${this.suit}_${this.rank}`);
-      this.setScale(config.card.scaleX);
-    })
-  }
 
-  flip() {
-    if (this.faceDown) {
-      this.setTexture(`${this.suit}_${this.rank}`);
-      this.setScale(config.card.scaleX);
-    } else {
-      this.setTexture('backCard');
-      this.setScale(0.7);
-    }
-    this.faceDown != this.faceDown;
-  }
 
   tweenFlip() {
-    //this.setInteractive();
-    //this.on('pointerdown', () => {
     this.scene.tweens.add({
       targets: this,
       scaleX: 0,
@@ -113,15 +88,11 @@ export default class Card extends Phaser.GameObjects.Image {
         this.scene.tweens.add({
           targets: this,
           scaleX: 0.13,
-          //scaleY: 0.13,
           duration: 350,
           ease: 'Linear'
         })
       }
     })
-
-
-    //})
 
   }
 }
