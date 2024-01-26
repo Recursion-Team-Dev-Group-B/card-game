@@ -1923,7 +1923,6 @@ export default class PokerTable {
 
     createHomeButton() {
         const homeButton = this.scene.add.image(0, 0, 'button_home').setOrigin(0, 0);
-        console.log(homeButton);
         homeButton.setX(10);
         homeButton.setY(10);
         homeButton.setDisplaySize(50, 50);
