@@ -7,7 +7,7 @@
 - Poker
 - Speed
 
-# Game Link
+# 🎮Game Link
 - [Click here!](https://card-game-theta-three.vercel.app/)
 
 # 📙Documents
