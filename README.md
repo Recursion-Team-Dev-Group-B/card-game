@@ -1,4 +1,4 @@
-# Description
+# 📄Description
 
 トランプゲームで遅べるWebアプリケーションを開発しました。要件定義ぁら実装まで行いました。
 以下4種類のトランプゲームがプレイできます。
@@ -7,21 +7,52 @@
 - Poker
 - Speed
 
-# Documents
+# 📙Documents
 
 - [要件定義](https://github.com/Recursion-Team-Dev-Group-B/card-game/wiki/%E8%A6%81%E4%BB%B6%E5%AE%9A%E7%BE%A9)
 - [アクティブティ図](https://github.com/Recursion-Team-Dev-Group-B/card-game/wiki/%E3%82%A2%E3%82%AF%E3%83%86%E3%82%A3%E3%83%93%E3%83%86%E3%82%A3%E5%9B%B3)
-# Tech Stacks
 
-- プラットフォーム: Web
-- アーキテクチャ: MVC
-- フロントエンド: TypeScript + Phaser3 + TailwindCSS
-- バックエンド: Node.js
-- 言語: TypeScript
-- フレームワーク: Phaser3 Game Framework, Next.js, React.js
-- インフラ: Docker
-- デプロイ: Vercel
-- 状態管理: LocalStorage
+# 🌍Environment Building
+```bash
+## 1. git clone
+mkdir -p ~/recursion
+cd ~/recursion
+git clone https://github.com/Recursion-Team-Dev-Group-B/card-game.git
+cd ~/recursion/card-game
+
+## 2. Dockerビルド ~ 起動
+cd ~/recursion/card-game
+# ビルド
+docker compose build
+
+## 3. コンテナ起動
+docker compose up -d
+
+## 4. サーバー起動
+# コンテナに入る
+docker exec -it card-game bash
+# サーバー起動
+npm install
+npm run dev
+
+## 5. ページにアクセス
+http://localhost:3000/
+```
+
+
+# 🚀Tech Stacks
+
+|カテゴリ | 技術スタック |
+| --- | --- |
+| プラットフォーム | Web |
+| アーキテクチャ | MVC |
+| フロントエンド | TypeScript <br> React.js<br> Next.js<br> Phaser| 
+| バックエンド | Node.js |
+| インフラ | Docker|
+| デプロイ | Vercel|
+| ストレージ | LocalStorage|
+| ソースコード管理 | Git, GitHub|
+| フォーマッター | Prettier|
 
 <div>
 <img src="https://cdn.discordapp.com/attachments/1180725363559637065/1200425033223381092/React-icon.svg.png?ex%253D65c621ee%2526is%253D65b3acee%2526hm%253D26c077b33e0a13fd3e7265023f5290c6c8257243b4f2aa6fd0b6e642e9b11e66%2526" height="10%" width="20%" alt="React"/>
@@ -34,13 +65,13 @@
 </div>
 
 
-# Future Functions
+# 🤖Future Functions
 - サインアップ、サインイン、ログアウト
 - 成績の可視化
 - 大富豪、 七並べ、ババ抜きなどのゲーム追加
 - オンライン対戦
 
-# Developers
+# 👦👩Developers
 - [goemon-github](https://github.com/goemon-github)
 - [seej000](https://github.com/seej000)
 - [totot1010](https://github.com/totot1010)
