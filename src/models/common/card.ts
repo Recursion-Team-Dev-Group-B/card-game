@@ -120,6 +120,26 @@ class Card extends Phaser.GameObjects.Image {
     };
     return rankToNum[this.#rank] ?? 0; // if rankToNum[this.rank] is undefined, this function returns 0
   }
+
+  // speed用のrankに対応する数値を取得。
+  getRankNumberOfSpeed(): number {
+    const rankToNum: { [key: string]: number } = {
+      A: 1,
+      '2': 2,
+      '3': 3,
+      '4': 4,
+      '5': 5,
+      '6': 6,
+      '7': 7,
+      '8': 8,
+      '9': 9,
+      '10': 10,
+      J: 11,
+      Q: 12,
+      K: 13,
+    };
+    return rankToNum[this.#rank] ?? 0; // if rankToNum[this.rank] is undefined, this function returns 0
+  }
 }
 
 export default Card;

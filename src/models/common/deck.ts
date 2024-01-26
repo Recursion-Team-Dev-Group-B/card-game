@@ -57,6 +57,42 @@ class Deck {
   getDeckSize(): number {
     return this.cardList.length;
   }
+
+  separateAndShuffleByColor(): { redCards: Card[]; blackCards: Card[] } {
+    const { redCards, blackCards } = this.separateByColor();
+
+    // 赤色のカードをシャッフル
+    this.shuffleArray(redCards);
+
+    // 黒色のカードをシャッフル
+    this.shuffleArray(blackCards);
+
+    return { redCards, blackCards };
+  }
+
+  private separateByColor(): { redCards: Card[]; blackCards: Card[] } {
+    const redCards: Card[] = [];
+    const blackCards: Card[] = [];
+
+    for (const card of this.cardList) {
+      if (card.suit === 'heart' || card.suit === 'diamond') {
+        redCards.push(card);
+      } else {
+        blackCards.push(card);
+      }
+    }
+
+    return { redCards, blackCards };
+  }
+
+
+  private shuffleArray(cards: Card[]): void {
+    for (let i = 0; i < cards.length; i += 1) {
+      const randomIndex: number = Math.floor(Math.random() * cards.length);
+      [cards[i], cards[randomIndex
+      ]] = [cards[randomIndex], cards[i]]; // カードの位置を入れ替える
+    }
+  }
 }
 
 export default Deck;
