@@ -139,6 +139,7 @@ export default class PokerTable {
         startText.setY(commonConfig.phaserConfig.height / 2);
 
         const fillZone = this.scene.add.zone(0, 0, commonConfig.phaserConfig.width, commonConfig.phaserConfig.height);
+        this.createHomeButton();
         fillZone.setOrigin(0, 0);
         fillZone.setInteractive();
         fillZone.on('pointerdown', () => {
@@ -178,9 +179,6 @@ export default class PokerTable {
         this.handleRound();
     }
 
-    initializeTurn() {
-
-    }
 
     async handleRound() {
 
@@ -275,7 +273,6 @@ export default class PokerTable {
 
             // プリフロップターン
             if (this.currentRound === 'preflop') {
-                console.log('------------preFlop');
                 this.updateRoundText(
                     this.containerHelper.communityContainer,
                     this.currentRound,
@@ -367,7 +364,6 @@ export default class PokerTable {
                 }
 
             } else if (this.currentRound === 'flop') {
-                console.log('------------flop');
 
                 // currentPlayerを設定する
                 this.setCurrentPlayer();
@@ -432,7 +428,6 @@ export default class PokerTable {
                 }
 
             } else if (this.currentRound === 'turn') {
-                console.log('------------Turn');
                 this.updateRoundText(
                     this.containerHelper.communityContainer,
                     this.currentRound
@@ -497,7 +492,6 @@ export default class PokerTable {
                 }
 
             } else if (this.currentRound === 'river') {
-                console.log('------------River');
 
                 this.updateRoundText(
                     this.containerHelper.communityContainer,
@@ -739,32 +733,26 @@ export default class PokerTable {
     aiChooseAction(action: string, bet: number, player: PokerAI) {
         switch (action) {
             case 'bet':
-                console.log('ai choose bet');
                 this.actionBet(player, bet);
                 break;
 
             case 'call':
-                console.log('ai choose call');
                 this.actionCall(player, bet);
                 break;
 
             case 'raise':
-                console.log('ai choose raise');
                 this.actionRaise(player, bet);
                 break;
 
             case 'fold':
-                console.log('ai choose fold');
                 this.actionFold(player);
                 break;
 
             case 'check':
-                console.log('ai choose check');
                 this.actionCheck(player);
                 break;
 
             case 'allin':
-                console.log('ai choose allin');
                 this.actionAllin(player);
                 break;
         }
@@ -777,7 +765,6 @@ export default class PokerTable {
         const btnText = typeof btn === 'string' ? btn : btn.getData('action');
         switch (btnText) {
             case 'bet':
-                console.log('choose bet');
                 if (player.chips >= bet && this.roundBet < bet) {
                     this.deleteInsufficientBetText();
                     this.actionBet(player, bet);
@@ -791,7 +778,6 @@ export default class PokerTable {
                 break;
 
             case 'call':
-                console.log('choose call');
                 if (player.chips >= bet) {
                     this.deleteInsufficientBetText();
                     this.actionCall(player, bet);
@@ -805,7 +791,6 @@ export default class PokerTable {
                 break;
 
             case 'raise':
-                console.log('choose raise');
                 bet = this.actionRaiseHelper(bet);
                 // ベッドが掛け金の２倍以上
                 if (player.chips >= bet && this.roundBet * 2 <= bet) {
@@ -821,21 +806,18 @@ export default class PokerTable {
                 break;
 
             case 'fold':
-                console.log('choose fold');
                 this.deleteInsufficientBetText();
                 this.actionFold(player);
                 return true;
                 break;
 
             case 'check':
-                console.log('choose check');
                 this.deleteInsufficientBetText();
                 this.actionCheck(player);
                 return true;
                 break;
 
             case 'allin':
-                console.log('choose allin');
                 this.deleteInsufficientBetText();
                 this.actionAllin(player);
                 return true;
@@ -1940,8 +1922,17 @@ export default class PokerTable {
 
 
     createHomeButton() {
-        const homeButton = this.scene.add.image(0, 0, 'button_home').setOrigin(0.5, 0.5);
+        const homeButton = this.scene.add.image(0, 0, 'button_home').setOrigin(0, 0);
+        console.log(homeButton);
+        homeButton.setX(10);
+        homeButton.setY(10);
+        homeButton.setDisplaySize(50, 50);
         this.scene.add.existing(homeButton);
+
+        homeButton.setInteractive({ cursor: 'pointer' });
+        homeButton.on('pointerdown', () => {
+            window.location.href = '/';
+        })
     }
 
     // デッキの再生成
