@@ -42,7 +42,7 @@ export class MainBetScene extends Phaser.Scene {
 
   create(): void {
     const { width, height } = this.game.canvas;
-    setBackground(this, width, height, 'war_table', { x: 1.7, y: 1 });
+    setBackground(this, width, height, 'war_table', { x: 1, y: 1 });
 
     // 所持金とベット金額の初期化
     if (this.funds === undefined) {

@@ -53,7 +53,7 @@ export class MainGameScene extends Phaser.Scene {
 
   create() {
     const { width, height } = this.game.canvas;
-    setBackground(this, width, height, 'war_table', { x: 1.7, y: 1 });
+    setBackground(this, width, height, 'war_table', { x: 1, y: 1 });
 
     // 白い枠線の円を描く
     displayBetArea(this);

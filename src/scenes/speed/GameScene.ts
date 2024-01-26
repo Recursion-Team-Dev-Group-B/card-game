@@ -82,7 +82,7 @@ export class GameScene extends Phaser.Scene {
         });
 
         const { width, height } = this.game.canvas;
-        setBackground(this, width, height, 'table', { x: 1.7, y: 1 });
+        setBackground(this, width, height, 'table', { x: 1, y: 1 });
 
         const deck = new Deck(this.sys.scene);
         deck.shuffle();

@@ -77,7 +77,7 @@ export class TieBetScene extends Phaser.Scene {
     const { width, height } = this.game.canvas;
     this.cameras.main.setBackgroundColor('#242424');
     const backgroundImage = this.add.image(width * 0.5, height * 0.5, 'war_table').setOrigin(0.5, 0.5);
-    backgroundImage.setScale(1.7, 1);
+    backgroundImage.setScale(1, 1);
 
     displayTieGameLogo(this);
 

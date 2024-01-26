@@ -60,7 +60,7 @@ export const cardAssets = [
 
 export const imageAssets = [
     { key: 'backcard', path: '/game/speed/speed_backcard.png' },
-    { key: 'table', path: '/game/speed/speed_table.png' },
+    { key: 'table', path: '/game/speed/commonTable.webp' },
 ];
 
 // warから持ってくる。あとで移す。

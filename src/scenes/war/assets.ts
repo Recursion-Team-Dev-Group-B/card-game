@@ -60,7 +60,7 @@ export const cardAssets = [
 
 export const imageAssets = [
   { key: 'backcard', path: '/game/war/war_backcard.png' },
-  { key: 'war_table', path: '/game/war/war_table.png' },
+  { key: 'war_table', path: '/game/war/commonTable.webp' },
   { key: 'warChip_1', path: '/game/war/warChip_1.png' },
   { key: 'warChip_5', path: '/game/war/warChip_5.png' },
   { key: 'warChip_25', path: '/game/war/warChip_25.png' },

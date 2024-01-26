@@ -55,7 +55,7 @@ export class TieGameScene extends Phaser.Scene {
 
   create() {
     const { width, height } = this.game.canvas;
-    setBackground(this, width, height, 'war_table', { x: 1.7, y: 1 });
+    setBackground(this, width, height, 'war_table', { x: 1, y: 1 });
 
     displayTieGameLogo(this);
 
