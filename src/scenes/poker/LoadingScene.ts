@@ -25,6 +25,8 @@ class LoadingScene extends Phaser.Scene {
   }
 
   preload() {
+    // button
+    this.load.image('button_home', '/game/common/button/home_button.png');
     // sound
     this.load.audio('sound_win', '/game/poker/sound/public_game_sound_win.mp3');
     this.load.audio('sound_lose', '/game/poker/sound/public_game_sound_lose.mp3');
@@ -90,7 +92,6 @@ class LoadingScene extends Phaser.Scene {
     this.load.image('spade_Q', '/game/common/images/cards/spade_Q.png');
     this.load.image('spade_K', '/game/common/images/cards/spade_K.png');
     this.load.image('back_card', '/game/common/images/cards/back_card.png');
-    this.load.image('button', '/game/common/button/button.png');
 
     let width = this.cameras.main.width;
     let height = this.cameras.main.height;

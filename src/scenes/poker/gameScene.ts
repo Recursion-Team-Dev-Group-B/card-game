@@ -1,7 +1,6 @@
 'use client';
 import { useState } from 'react';
 import * as Phaser from 'phaser';
-//import Deck from '@/models/common/deck';
 import Deck from '@/scenes/poker/common/deck';
 import Zone = Phaser.GameObjects.Zone;
 import Image = Phaser.GameObjects.Image;
@@ -16,9 +15,6 @@ import ContainerHelper from '@/scenes/poker/helpers/ContainerHelper';
 import PokerPlayer from '@/scenes/poker/common/pokerPlayer';
 import PokerAI from '@/scenes/poker/common/pokerAI';
 
-//const GameScene = () => {
-//const [config, setConfig] = useState<Phaser.Types.Core.GameConfig>();
-//const loadGame = async () => {
 class PokerScene extends Phaser.Scene {
   tableImage: Image | undefined;
 
