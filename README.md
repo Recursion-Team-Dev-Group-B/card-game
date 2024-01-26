@@ -7,7 +7,11 @@
 - Poker
 - Speed
 
-# 技術スタック
+# Documents
+
+- [要件定義](https://github.com/Recursion-Team-Dev-Group-B/card-game/wiki/%E8%A6%81%E4%BB%B6%E5%AE%9A%E7%BE%A9)
+- [アクティブティ図](https://github.com/Recursion-Team-Dev-Group-B/card-game/wiki/%E3%82%A2%E3%82%AF%E3%83%86%E3%82%A3%E3%83%93%E3%83%86%E3%82%A3%E5%9B%B3)
+# Tech Stacks
 
 - プラットフォーム: Web
 - アーキテクチャ: MVC
@@ -29,20 +33,16 @@
 <img src="https://cdn.discordapp.com/attachments/1180725363559637065/1200425030799065178/vercel-logotype-dark.png?ex%253D65c621ee%2526is%253D65b3acee%2526hm%253De254ab491b6b23748d4d36753c1e394411de00767efd2de7090891d71557d5c0%2526" height="10%" width="20%" alt="Vercel"/>
 </div>
 
-# 今後実装したい機能
+
+# Future Functions
 - サインアップ、サインイン、ログアウト
 - 成績の可視化
 - 大富豪、 七並べ、ババ抜きなどのゲーム追加
 - オンライン対戦
 
-# 開発者
+# Developers
 - [goemon-github](https://github.com/goemon-github)
 - [seej000](https://github.com/seej000)
 - [totot1010](https://github.com/totot1010)
-
-
-
-
-
 
 
