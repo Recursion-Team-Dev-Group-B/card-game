@@ -28,7 +28,7 @@ class Card extends Phaser.GameObjects.Image {
     this.displayHeight = 150
     this.displayWidth = 120
     scene.add.existing(this);
-    this.setInteractive();
+    //this.setInteractive();
   }
 
   // suitのgetter
