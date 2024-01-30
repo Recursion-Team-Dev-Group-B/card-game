@@ -12,7 +12,7 @@ const CardFlip = ({ gameName }: Props) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const router = useRouter();
 
-  const flipCard = () => {
+  const flipCard = (): void => {
     setIsFlipped((prev) => !prev);
   };
 
@@ -24,7 +24,9 @@ const CardFlip = ({ gameName }: Props) => {
   return (
     <div className="mr-8 ml-12 mt-12">
       <ReactCardFlip isFlipped={isFlipped} flipDirection="horizontal">
-        {/* <CardImage
+        {/* 
+        
+        <CardImage
           url={`/assets/${gameName}.png`}
           alt={gameName}
           flipCard={flipCard}
@@ -52,7 +54,7 @@ const CardFlip = ({ gameName }: Props) => {
               {`Play ${gameName}`}
             </button>
           </div>
-        </div>
+        </div> 
       </ReactCardFlip>
     </div>
   );

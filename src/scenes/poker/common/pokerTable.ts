@@ -189,125 +189,28 @@ export default class PokerTable {
         for (let player of this.players) {
             await this.checkHasNoMoney(player);
         }
+
         if (!this.isGameOver) {
             /*
                 毎ラウンド始まる前の処理
             */
             // riverが終わったら場のカードを捨て札に加え、コンテナに追加されたcardImageを削除
             if (this.communityCardList.length === 5 || this.currentRound === 'preflop') {
-
-
-                // このターン使用した場のカードを捨て札に加え,場のカードの情報を初期化する
-                this.deck.discardList.push(...this.communityCardList);
-                for (let i in this.players) {
-                    const currentPlayer = this.players[i]
-                    this.deck.discardList.push(...currentPlayer.hand);
-                    currentPlayer.clearHand();
-                }
-                this.communityCardList = [];
-
-
-                // コミュニティコンテナからphaserのカードイメージを削除する
-                let deleteCards = this.containerHelper.communityContainer.getAll('type', 'Image');
-                this.deleteCardsArrayFromContainer(this.containerHelper.communityContainer, deleteCards);
-                this.containerHelper.communityContainer.setData('cards', '');
-
-                // プレイヤーコンテナからphaserのカードイメージを削除する
-                deleteCards = this.containerHelper.playerContainer.getAll('type', 'Image');
-                this.deleteCardsArrayFromContainer(this.containerHelper.playerContainer, deleteCards);
-
-                // ハウスコンテナからphaserのカードイメージを削除する
-                deleteCards = this.containerHelper.houseContainer.getAll('type', 'Image');
-                this.deleteCardsArrayFromContainer(this.containerHelper.houseContainer, deleteCards);
-
-                // 手役の表示を消す
-                this.clearHandRankText(this.containerHelper.playerContainer);
-                this.clearHandRankText(this.containerHelper.houseContainer);
-
-                // アクションをリセット
-                this.resetallPlayerAction();
-
-                // プレイヤーの表示情報を更新
-                this.players.forEach(player => {
-                    if (player.playerType === 'player') {
-                        this.updateDisplayPlayerAmount(player);
-                        this.updatePlayerBetText(player, this.containerHelper.playerContainer);
-                        this.updatePlayerActionText(player.action, this.containerHelper.playerContainer);
-                    } else {
-                        this.updateDisplayPlayerAmount(player);
-                        this.updatePlayerBetText(player, this.containerHelper.houseContainer);
-                        this.updatePlayerActionText(player.action, this.containerHelper.houseContainer);
-                    }
-                })
-
-                // ディーラーが一周したかどうか確認
-                this.checkDealerRotationComplate();
-
-                // １周したらante(参加料)を増やす　
-                this.raiseAnte();
-
-                // プレイヤーの初期化
-                // ノーコンテストを初期化
-                this.isNoContest = false;
-
-                // プレイヤーの初期化
-                for (let player of this.players) {
-                    player.action = '';
-                    if (player.chips != 0) {
-                        player.isActive = true;
-                        player.bet = 0;
-                        player.handRank = 0;
-                    }
-                }
-
-                // テーブルの初期化
-                this.resetCurrentRoundIndex();
-                this.roundCounter = 0;
-                this.turnCounter = 0;
-
-
-
+                this.resetTurn();
                 // 山札が足りるか確認する、足りなければ作る
                 this.dealCards();
             }
 
             // プリフロップターン
             if (this.currentRound === 'preflop') {
-                this.updateRoundText(
-                    this.containerHelper.communityContainer,
-                    this.currentRound,
-                );
-                // ラウンド終了時のアナウンスを削除
-                this.clearInfomationToGameEnd();
 
-                // ディーラーテキストを表示する
-                this.displayDealerText();
-
-                // 現在表示されているアクションボタンを削除
-                this.deleteActionButton();
-
-                // プレイヤーのターンチェックをリセット
-                this.resetPlayersTurn();
-
-
-                // アクション履歴をリセット
-                this.clearActionHistory();
-
-                //　プレイヤーの掛け金をリセット
-                this.resetPlayersBetText(this.players);
-
-                // currentPlayerを設定する
-                this.setCurrentPlayer();
-
-
-                // アクションをリセット
-                this.resetallPlayerAction();
-
-                // 参加料の処理 potの処理
-                this.payAnte(this.ante, this.players);
+                this.resetRound();
 
                 // ラウンド毎の掛け金を０にする
                 this.roundBet = 0;
+
+                // 参加料の処理 potの処理
+                this.payAnte(this.ante, this.players);
 
                 await this.delay(1);
 
@@ -365,23 +268,7 @@ export default class PokerTable {
 
             } else if (this.currentRound === 'flop') {
 
-                // currentPlayerを設定する
-                this.setCurrentPlayer();
-
-                // 現在表示されているアクションボタンを削除
-                this.deleteActionButton();
-
-                //プレイヤーの掛け金をリセット
-                this.resetPlayersBetText(this.players);
-
-                // プレイヤーのターンチェックをリセット
-                this.resetPlayersTurn();
-
-                // アクション履歴をリセット
-                this.clearActionHistory();
-
-                // アクションをリセット
-                this.resetallPlayerAction();
+                this.resetRound();
 
                 // ラウンド毎の掛け金を０にする
                 this.roundBet = 0;
@@ -428,28 +315,7 @@ export default class PokerTable {
                 }
 
             } else if (this.currentRound === 'turn') {
-                this.updateRoundText(
-                    this.containerHelper.communityContainer,
-                    this.currentRound
-                );
-
-                // 現在表示されているアクションボタンを削除
-                this.deleteActionButton();
-
-                // currentPlayerを設定する
-                this.setCurrentPlayer();
-
-                //プレイヤーの掛け金をリセット
-                this.resetPlayersBetText(this.players);
-
-                // アクション履歴をリセット
-                this.clearActionHistory();
-
-                // プレイヤーのターンチェックをリセット
-                this.resetPlayersTurn();
-
-                // アクションをリセット
-                this.resetallPlayerAction();
+                this.resetRound();
 
                 // ラウンド毎の掛け金を０にする
                 this.roundBet = 0;
@@ -493,28 +359,7 @@ export default class PokerTable {
 
             } else if (this.currentRound === 'river') {
 
-                this.updateRoundText(
-                    this.containerHelper.communityContainer,
-                    this.currentRound
-                );
-
-                // 現在表示されているアクションボタンを削除
-                this.deleteActionButton();
-
-                // currentPlayerを設定する
-                this.setCurrentPlayer();
-
-                //プレイヤーの掛け金をリセット
-                this.resetPlayersBetText(this.players);
-
-                // プレイヤーのターンチェックをリセット
-                this.resetPlayersTurn();
-
-                // アクション履歴をリセット
-                this.clearActionHistory();
-
-                // アクションをリセット
-                this.resetallPlayerAction();
+                this.resetRound();
 
                 // ラウンド毎の掛け金を０にする
                 this.roundBet = 0;
@@ -579,43 +424,134 @@ export default class PokerTable {
 
     // ラウンド処理のリファクタリング
     async roundProcess() {
+
+        // ターン毎の初期化
+        this.resetTurn();
+
+        // ラウンド毎の掛け金を０にする
+        this.roundBet = 0;
+
+        // 参加料の処理 potの処理
+        this.payAnte(this.ante, this.players);
+
         if (this.currentRound === 'preflop') {
             // 最終ラウンドでゲームゾーンがオンになるのでゲームゾンをオフにする
 
-            this.containerHelper.gameZone.off('pointerdown');
-            // ユーザープレイヤーの所持金が０の場合,ゲームを終了する
-            for (let player of this.players) {
-                if (player.playerType === 'player') {
-                    this.checkHasNoMoney(player);
-                }
-            }
+            // 現在のプレイヤーを取得する アクション処理をする
+            await this.handleRoundActions();
 
         } else if (this.currentRound === 'river') {
+            // 現在のプレイヤーを取得する アクション処理をする
+            await this.handleRoundActions();
 
         } else {
 
+            // 現在のプレイヤーを取得する アクション処理をする
+            await this.handleRoundActions();
         }
     }
 
     resetRound() {
-        /* ラウンド毎の初期化
-            controller:
-                プレイヤーのbetをリセット
-                プレイヤーターンチェックをリセット
-                アクション履歴をリセット
-                プレイヤーのアクションをリセット
-                ラウンドのbatをリセット
-            view:
-                ラウンド終了時のテキスト
-                アクションボタンを削除
-                ラウンドの更新
-            set: 
-                currentPlayer
-                dealer
-        */
+        this.updateRoundText(
+            this.containerHelper.communityContainer,
+            this.currentRound,
+        );
+        /* controller */
+
+        // プレイヤーのターンチェックをリセット
+        this.resetPlayersTurn();
+
+        // アクション履歴をリセット
+        this.clearActionHistory();
+
+        //　プレイヤーの掛け金をリセット
+        this.resetPlayersBetText(this.players);
+
+        // currentPlayerを設定する
+        this.setCurrentPlayer();
+
+        // アクションをリセット
+        this.resetallPlayerAction();
+
+        // ラウンド毎の掛け金を０にする
+        this.roundBet = 0;
+
+
+        /* view */
+
+        // 現在表示されているアクションボタンを削除
+        this.deleteActionButton();
+
 
     }
 
+    resetTurn() {
+
+        /* controller */
+        // このターン使用した場のカードを捨て札に加え,場のカードの情報を初期化する
+        this.deck.discardList.push(...this.communityCardList);
+        for (let i in this.players) {
+            const currentPlayer = this.players[i]
+            this.deck.discardList.push(...currentPlayer.hand);
+            currentPlayer.clearHand();
+        }
+        this.communityCardList = [];
+
+
+
+        // view 
+        // コミュニティコンテナからphaserのカードイメージを削除する
+        let deleteCards = this.containerHelper.communityContainer.getAll('type', 'Image');
+        this.deleteCardsArrayFromContainer(this.containerHelper.communityContainer, deleteCards);
+        this.containerHelper.communityContainer.setData('cards', '');
+
+        // プレイヤーコンテナからphaserのカードイメージを削除する
+        deleteCards = this.containerHelper.playerContainer.getAll('type', 'Image');
+        this.deleteCardsArrayFromContainer(this.containerHelper.playerContainer, deleteCards);
+
+        // ハウスコンテナからphaserのカードイメージを削除する
+        deleteCards = this.containerHelper.houseContainer.getAll('type', 'Image');
+        this.deleteCardsArrayFromContainer(this.containerHelper.houseContainer, deleteCards);
+
+        // 手役の表示を消す
+        this.clearHandRankText(this.containerHelper.playerContainer);
+        this.clearHandRankText(this.containerHelper.houseContainer);
+
+        // プレイヤーの初期化
+        this.clearPlayersStatusForTurn();
+
+
+        // ラウンド終了時のアナウンスを削除
+        this.clearInfomationToGameEnd();
+
+        // ディーラーテキストを表示する
+        this.displayDealerText();
+
+
+        // ディーラーが１周していたら参加料を増やす
+        this.checkRaiseAnte();
+
+        // ノーコンテストを初期化
+        this.isNoContest = false;
+
+        // プレイヤーの表示情報を更新
+        this.players.forEach(player => {
+            if (player.playerType === 'player') {
+                this.updateDisplayPlayerAmount(player);
+                this.updatePlayerBetText(player, this.containerHelper.playerContainer);
+                this.updatePlayerActionText(player.action, this.containerHelper.playerContainer);
+            } else {
+                this.updateDisplayPlayerAmount(player);
+                this.updatePlayerBetText(player, this.containerHelper.houseContainer);
+                this.updatePlayerActionText(player.action, this.containerHelper.houseContainer);
+            }
+        })
+
+        // テーブルの初期化
+        this.resetCurrentRoundIndex();
+        this.roundCounter = 0;
+        this.turnCounter = 0;
+    }
 
 
     // コンテナに追加されているカードオブジェクトを削除する, 引数が配列
@@ -897,9 +833,7 @@ export default class PokerTable {
     // アクションを初期化にする
     resetallPlayerAction() {
         this.players.forEach(player => {
-            if (this.currentRound === 'preflop') {
-                player.action = '';
-            } else if (player.action != 'allin') {
+            if (this.currentRound === 'preflop' || player.action != 'allin') {
                 player.action = '';
             }
         })
@@ -957,7 +891,7 @@ export default class PokerTable {
             betBtn.setData('action', 'bet');
             const foldBtn = this.scene.add.text(0, 0, 'Fold').setOrigin(0, 0.5).setFontSize(commonConfig.text.fontSize.chooseAction);
             foldBtn.setData('action', 'fold');
-            const checkBtn = this.scene.add.text(0, 0, 'Chack').setOrigin(0, 0.5).setFontSize(commonConfig.text.fontSize.chooseAction);
+            const checkBtn = this.scene.add.text(0, 0, 'Check').setOrigin(0, 0.5).setFontSize(commonConfig.text.fontSize.chooseAction);
             checkBtn.setData('action', 'check');
             const allInBtn = this.scene.add.text(0, 0, 'ALL IN').setOrigin(0, 0.5).setFontSize(commonConfig.text.fontSize.chooseAction);
             allInBtn.setData('action', 'allin');
@@ -1147,8 +1081,6 @@ export default class PokerTable {
                 while (!result) {
                     const button: any = await this.excuteActionOnButtonClick(btns);
                     // ボタンがクリックされた後にプレイヤーの掛け金を取得
-                    //const betInput = this.containerHelper.actionContainer.getData('betInput');
-                    //const playerBet = Number(this.getBetInputValue(betInput));
                     const playerBet = 100;
                     result = this.handleButtonClick(button, currentPlayer, playerBet);
                 };
@@ -1634,19 +1566,6 @@ export default class PokerTable {
         }
     }
 
-    /* 
-    updatePlayerAmountText(
-        container: Phaser.GameObjects.Container,
-        amount: number,
-    ) {
-        const objectPlayerAmoutText = container.getData('objectPlayerAmountText');
-        container.setData('amount', amount);
-
-        objectPlayerAmoutText.setText(
-            `${container.getData('templateAmountText')} ${container.getData('amount')}`
-        );
-    };
-    */
 
     // 
     updateRoundText(
@@ -1933,6 +1852,29 @@ export default class PokerTable {
             window.location.href = '/';
         })
     }
+
+
+    checkRaiseAnte() {
+        // ディーラーが一周したかどうか確認
+        this.checkDealerRotationComplate();
+
+        // １周したらante(参加料)を増やす　
+        this.raiseAnte();
+    }
+
+
+    clearPlayersStatusForTurn() {
+        // プレイヤーの初期化
+        for (let player of this.players) {
+            player.action = '';
+            if (player.chips != 0) {
+                player.isActive = true;
+                player.bet = 0;
+                player.handRank = 0;
+            }
+        }
+    }
+
 
     // デッキの再生成
 
