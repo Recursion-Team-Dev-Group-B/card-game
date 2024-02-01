@@ -54,7 +54,6 @@ class BaseScene extends Phaser.Scene {
         this.add.existing(backGrondImage);
     }
 
-
 }
 
 
