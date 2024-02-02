@@ -1,8 +1,7 @@
 import * as Phaser from 'phaser';
-//import GameScene from '@/scenes/poker/gameScene';
 import PokerScene from '@/scenes/poker/gameScene';
 import LoadScene from '@/scenes/poker/LoadingScene';
-//import LoadingScene from '@/scenes/LoadingScene';
+//import PokerScene from '@/scenes/poker/refactoring/gameScene';
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,

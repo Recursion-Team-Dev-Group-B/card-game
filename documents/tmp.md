@@ -1,0 +1,65 @@
+- /models
+  - /blackjack
+    - blackjackPlayer extends player
+  - /war
+    - warPlayer extends player
+  - /speed
+    - speedPlayer extends player
+  - /poker
+    - pokerPlayer extends player
+  - /common
+    - card
+      - カード引く
+    - deck
+      - デッキのシャッフル
+    - chip
+    - player
+    - table
+      - ゲーム始まりのカウントダウン
+      - 
+- /scene
+  - /blackjack
+    - gameScene extends tableScene
+      - ゲームのロジック
+  - /war
+    - gameScene extends tableScene
+  - /speed
+    - gameScene extends tableScene
+  - /poker
+    - gameScene extends tableScene
+  - /common
+    - baseScene extends Phaser.scene
+      - width
+      - height
+      - gameZone
+      - homeButton
+      
+    - tableScene extends baseScene
+      - アニメーション
+      - 効果音
+      - 所持金、賭け金の表示位置
+      - デッキとカードの生成
+      - playerの位置
+      - ゲームの中断、リプレイ
+      - 所持金判定
+    - loadingScene extends baseScene
+      - アセットのロード
+    - betScene extends baseScene
+      - 
+- /constants
+  - /blackjack
+    - gameResult
+    - gameStatus
+  - /war
+  - /speed
+  - /poker
+  - /common
+    - style.ts
+- /types
+- /utils
+  - storage.ts
+  - config.ts 
+
+# React
+- ユーザー名
+- ゲーム選択、難易度選択

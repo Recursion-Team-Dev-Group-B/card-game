@@ -157,6 +157,7 @@ export class GameScene extends Phaser.Scene {
             pointer: Phaser.Input.Pointer,
             gameObject: Phaser.GameObjects.Sprite
         ) => {
+            console.log('card Cliick');
             gameObject.setDepth(1); // ドラッグされたカードの深度を上げる
         });
 
