@@ -15,7 +15,6 @@ export default class ContainerHelper {
     public actionContainer: Phaser.GameObjects.Container;
     public actionButtonContainer: Phaser.GameObjects.Container;
     public imageHelper: ImageHelper;
-    public arrayModal: Array<Phaser.GameObjects.Text | Phaser.GameObjects.Rectangle>
 
     constructor(scene: Phaser.Scene, pot: Pot) {
         // playerZoneの作成
@@ -27,7 +26,6 @@ export default class ContainerHelper {
         this.houseContainer = this.createHouseContainer();
         this.actionContainer = this.createActionContainer();
         this.actionButtonContainer = this.createActionButtonContainer();
-        this.arrayModal = this.createModal();
     };
 
     // GameZoneを作成
