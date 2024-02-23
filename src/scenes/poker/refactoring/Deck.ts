@@ -1,7 +1,7 @@
 /* eslint no-underscore-dangle: 0 */
 import * as Phaser from 'phaser';
 import GAME from '@/constants/game';
-import Card from '@/scenes/poker/common/Card';
+import Card from '@/scenes/poker/refactoring/Card';
 
 class Deck {
   cardList: Array<Card> = [];
