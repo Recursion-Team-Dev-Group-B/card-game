@@ -3,13 +3,17 @@ import PokerPlayer from '@/scenes/poker/common/pokerPlayer';
 import PokerAI from '@/scenes/poker/common/pokerAI';
 import Pot from '@/scenes/poker/common/pot';
 import ContaierHelper from '../helpers/ContainerHelper';
-import Card from './card';
+import Card from '@/scenes/poker/refactoring/Card';
+//import Card from '@/scenes/poker/common/Card';
 import Deck from '@/scenes/poker/common/deck';
 import commonConfig from '@/scenes/poker/common/config';
-import { thisTypeAnnotation, tupleExpression } from '@babel/types';
+
+import { thisTypeAnnotation, tupleExpression, tsImportEqualsDeclaration } from '@babel/types';
 import { Gothic_A1 } from 'next/font/google';
 import { resolve } from 'styled-jsx/css';
 import { start } from 'repl';
+import StackScene from '@/scenes/blackjack/stackScene';
+import ViewBet from '../refactoring/viewBet';
 
 export default class PokerTable {
 
@@ -39,7 +43,7 @@ export default class PokerTable {
     public ante: number;
 
     // 場に出ているカードを持つ、捨て札の作成に使用
-    public communityCardList: Array<Card> = [];
+    public communityCardList: Array<Card>;
 
     // 変数名が微妙 後で検討
     public containerHelper: ContaierHelper;
@@ -49,7 +53,11 @@ export default class PokerTable {
     public sounds: { [key: string]: Phaser.Sound.BaseSound };
     public isGameOver: boolean;
 
-
+    // betModal
+    public modalContainer: Phaser.GameObjects.Container;
+    public modalBackground: Phaser.GameObjects.Rectangle;
+    public viewBet: ViewBet | undefined;
+    public isShowModalBet: boolean;
     /*  
     */
 
@@ -83,13 +91,13 @@ export default class PokerTable {
         this.actionHistroy = [];
         this.handRanking = {
             // ロイヤルフラッシュ  
-            'royalFlash': 8,
+            'royalFlash': 9,
             // ストレートフラッシュ 
-            'straightFlash': 7,
+            'straightFlash': 8,
             // フォーカード 
-            'forOfaKind': 6,
+            'forOfaKind': 7,
             // フルハウス 
-            'fullHouse': 5,
+            'fullHouse': 6,
             // フラッシュ 
             'flash': 5,
             // ストレート　 
@@ -103,6 +111,10 @@ export default class PokerTable {
         }
         this.sounds = this.createSounds();
         this.isGameOver = false;
+        this.modalContainer = this.containerHelper.createModalBet();
+        this.modalBackground = this.modalContainer.getData('background');
+        this.viewBet = this.createViewBet();
+        this.isShowModalBet = false;
 
     }
 
@@ -129,6 +141,16 @@ export default class PokerTable {
             'click': this.scene.sound.add('sound_click').setVolume(0.6),
         }
 
+    }
+
+    createViewBet(): ViewBet | undefined {
+        const pokerPlayer = this.players.find(player => player instanceof PokerPlayer)
+
+        if (!pokerPlayer) {
+            return undefined;
+        }
+
+        return this.createModalBet(pokerPlayer, this.modalContainer);
     }
 
     // ゲームを始める前にロードを行う
@@ -203,7 +225,6 @@ export default class PokerTable {
 
             // プリフロップターン
             if (this.currentRound === 'preflop') {
-
                 this.resetRound();
 
                 // ラウンド毎の掛け金を０にする
@@ -267,11 +288,10 @@ export default class PokerTable {
                 }
 
             } else if (this.currentRound === 'flop') {
-
                 this.resetRound();
-
                 // ラウンド毎の掛け金を０にする
                 this.roundBet = 0;
+
 
                 await this.delay(1);
                 //  テーブルの場のカードに１枚追加する
@@ -588,7 +608,7 @@ export default class PokerTable {
     // コンテナにカードオブジェクトを入れる. 引数がカードの配列
     addCardsArrayToContainer(
         container: Phaser.GameObjects.Container,
-        cards: Array<Card>,
+        cards: Array<Card | undefined>,
         positionX: number,
         positionY: number,
         scaleX: number,
@@ -631,7 +651,7 @@ export default class PokerTable {
                         drawCard.back();
                     }
                 }
-                const drawCards: Array<Card> = [...currentPlayer.hand];
+                const drawCards: Array<Card | undefined> = [...currentPlayer.hand];
                 this.addCardsArrayToContainer(
                     this.containerHelper.playerContainer,
                     drawCards,
@@ -652,7 +672,7 @@ export default class PokerTable {
                         drawCard.back();
                     }
                 }
-                const drawCards: Array<Card> = [...currentPlayer.hand];
+                const drawCards: Array<Card | undefined> = [...currentPlayer.hand];
                 this.addCardsArrayToContainer(
                     this.containerHelper.houseContainer,
                     drawCards,
@@ -696,14 +716,14 @@ export default class PokerTable {
 
     // 
     // プレイヤーのアクションボタンがクリックされたら各アクションを実行
-    handleButtonClick(btn: Phaser.GameObjects.Text | string, player: PokerPlayer | PokerAI, bet: number): any {
+    async handleButtonClick(btn: Phaser.GameObjects.Text | string, player: PokerPlayer | PokerAI, bet: number): Promise<any> {
 
         const btnText = typeof btn === 'string' ? btn : btn.getData('action');
         switch (btnText) {
             case 'bet':
                 if (player.chips >= bet && this.roundBet < bet) {
                     this.deleteInsufficientBetText();
-                    this.actionBet(player, bet);
+                    await this.actionBet(player, bet);
                     return true;
                 } else {
                     if (player.playerType === 'player') {
@@ -711,7 +731,6 @@ export default class PokerTable {
                     }
                     return false;
                 }
-                break;
 
             case 'call':
                 if (player.chips >= bet) {
@@ -724,14 +743,13 @@ export default class PokerTable {
                     }
                     return false;
                 }
-                break;
 
             case 'raise':
                 bet = this.actionRaiseHelper(bet);
                 // ベッドが掛け金の２倍以上
                 if (player.chips >= bet && this.roundBet * 2 <= bet) {
                     this.deleteInsufficientBetText();
-                    this.actionRaise(player, bet);
+                    await this.actionRaise(player, bet);
                     return true;
                 } else {
                     if (player.playerType === 'player') {
@@ -739,25 +757,21 @@ export default class PokerTable {
                     }
                     return false;
                 }
-                break;
 
             case 'fold':
                 this.deleteInsufficientBetText();
                 this.actionFold(player);
                 return true;
-                break;
 
             case 'check':
                 this.deleteInsufficientBetText();
                 this.actionCheck(player);
                 return true;
-                break;
 
             case 'allin':
                 this.deleteInsufficientBetText();
                 this.actionAllin(player);
                 return true;
-                break;
         }
     };
 
@@ -765,9 +779,13 @@ export default class PokerTable {
 
     //　各アクションの処理 ['bet', 'call',  'fold', 'raise', 'check', 'allin']
     // betはプレイヤーが掛けた金額だが、金額を入力する
-    actionBet(player: PokerPlayer | PokerAI, bet: number) {
-        player.bet = bet;
-        player.chips -= bet;
+    async actionBet(player: PokerPlayer | PokerAI, bet: number) {
+        if (player instanceof PokerPlayer) {
+            await this.showBetModal();
+        } else {
+            player.bet = bet;
+        }
+        player.chips -= player.bet;
         this.pot.addAmount(player.bet);
         this.roundBet = player.bet;
         this.updateCommunityBetText();
@@ -791,9 +809,14 @@ export default class PokerTable {
         player.isActive = false;
     }
 
-    actionRaise(player: PokerPlayer | PokerAI, bet: number) {
-        player.bet = bet;
-        player.chips -= bet;
+    async actionRaise(player: PokerPlayer | PokerAI, bet: number) {
+        if (player instanceof PokerPlayer) {
+            player.bet = this.roundBet;
+            await this.showBetModal();
+        } else {
+            player.bet = bet;
+        }
+        player.chips -= player.bet;
         this.pot.addAmount(player.bet);
         this.roundBet = player.bet;
         this.updateCommunityBetText();
@@ -1049,7 +1072,8 @@ export default class PokerTable {
 
     // 現在のプレイヤーが選択したアクションを取得し処理を非同期で実行する。実行先はawaitされている
     async waitForActionProcess(currentPlayer: PokerPlayer | PokerAI) {
-        if (currentPlayer.isActive === true && currentPlayer.action != 'allin') {
+        if (currentPlayer.isActive === true &&
+            currentPlayer.action != 'allin') {
 
             if (currentPlayer.playerType === 'ai' && currentPlayer instanceof PokerAI) {
 
@@ -1082,7 +1106,7 @@ export default class PokerTable {
                     const button: any = await this.excuteActionOnButtonClick(btns);
                     // ボタンがクリックされた後にプレイヤーの掛け金を取得
                     const playerBet = 100;
-                    result = this.handleButtonClick(button, currentPlayer, playerBet);
+                    result = await this.handleButtonClick(button, currentPlayer, playerBet);
                 };
                 await this.delay(1.5);
                 this.sounds.click.play();
@@ -1099,7 +1123,7 @@ export default class PokerTable {
 
 
     // そのターンをプレイヤーが終了した場合、checkPlayerTurnEndをtrueにする
-    setPlayerTurnEnd(currentPlayer: PokerPlayer) {
+    setPlayerTurnEnd(currentPlayer: PokerPlayer | PokerAI) {
         //　ベットの金額がラウンドの掛け金と等しい、もしくはアクティブではない（降りた）
 
         if (currentPlayer.bet === this.roundBet ||
@@ -1238,34 +1262,34 @@ export default class PokerTable {
 
 
     // 手役の強さを判定し、強さを返す
-    handRankChecker(communityCard: Array<Card>, playerHand: Array<Card>): number {
-        const cards = communityCard.concat(playerHand);
+    handRankChecker(communityCard: Array<Card>, playerHand: Array<Card | undefined>): number {
+        const cards = [...communityCard, ...playerHand.filter(card => card != undefined)];
 
         // ロイヤルフラッシュ  
-        const isRoyalFlash = (cards: Array<Card>) => {
+        const isRoyalFlash = (cards: Array<Card | undefined>) => {
             const flash = isFlash(cards);
             const royalRank = ['A', 'K', 'Q', 'J', '10'];
             const hasRoyalRank = royalRank.every(rank =>
-                cards.some(card => card.rank === rank)
+                cards.some(card => card?.rank === rank)
             );
 
             return flash && hasRoyalRank;
         }
 
         // ストレートフラッシュ 
-        const isStraightFlash = (cards: Array<Card>) => {
+        const isStraightFlash = (cards: Array<Card | undefined>) => {
             const flash = isFlash(cards);
             const rank = isStraight(cards);
             return (flash && rank);
         }
 
         // フォーカード 
-        const isForOfaKind = (cards: Array<Card>) => {
+        const isForOfaKind = (cards: Array<Card | undefined>) => {
             const rankCounts = new Map();
 
             cards.forEach(card => {
                 //ランクの集計
-                rankCounts.set(card.rank, (rankCounts.get(card.rank) || 0) + 1);
+                rankCounts.set(card?.rank, (rankCounts.get(card?.rank) || 0) + 1);
             });
 
             const forCard = Array.from(rankCounts.values()).some(count => count === 4);
@@ -1275,11 +1299,11 @@ export default class PokerTable {
         }
 
         // フルハウス 
-        const isFullHouse = (cards: Array<Card>) => {
+        const isFullHouse = (cards: Array<Card | undefined>) => {
             const rankCounts = new Map();
 
             cards.forEach(card => {
-                rankCounts.set(card.rank, (rankCounts.get(card.rank) || 0) + 1);
+                rankCounts.set(card?.rank, (rankCounts.get(card?.rank) || 0) + 1);
             })
 
             const counts = Array.from(rankCounts.values());
@@ -1287,34 +1311,35 @@ export default class PokerTable {
         }
 
         // フラッシュ 
-        const isFlash = (cards: Array<Card>) => {
-            const suits = cards.map(card => card.getsuit);
+        const isFlash = (cards: Array<Card | undefined>) => {
+            const suits = cards.map(card => card?.getsuit);
             const uniqueSuits = new Set(suits);
             return uniqueSuits.size === 1;
 
         }
 
         // ストレート　 
-        const isStraight = (cards: Array<Card>) => {
+        const isStraight = (cards: Array<Card | undefined>) => {
             const rank = cards.map(card => {
-                return card.getRankNumber() === 1 ? 14 : card.getRankNumber();
+                return card?.getRankNumber() === 1 ? 14 : card?.getRankNumber();
             });
 
             for (let i = 0; i < rank.length - 1; i++) {
-                if (rank[i + 1] - rank[i] != 1) {
+                if (rank[i + 1]! - rank[i]! != 1) {
                     return false;
                 }
+
             }
             return true;
         }
 
         // スリーカード 
-        const isThreeOfaKind = (cards: Array<Card>) => {
+        const isThreeOfaKind = (cards: Array<Card | undefined>) => {
             const rankCounts = new Map();
 
             cards.forEach(card => {
                 //ランクの集計
-                rankCounts.set(card.rank, (rankCounts.get(card.rank) || 0) + 1);
+                rankCounts.set(card?.rank, (rankCounts.get(card?.rank) || 0) + 1);
             });
 
             const threeCard = Array.from(rankCounts.values()).some(count => count === 3);
@@ -1323,11 +1348,11 @@ export default class PokerTable {
 
         }
         // ツーペア 
-        const isTwoPair = (cards: Array<Card>) => {
+        const isTwoPair = (cards: Array<Card | undefined>) => {
 
             const rankCounts = new Map();
             cards.forEach(card => {
-                rankCounts.set(card.rank, (rankCounts.get(card.rank) || 0) + 1);
+                rankCounts.set(card?.rank, (rankCounts.get(card?.rank) || 0) + 1);
             });
 
             const onePair = Array.from(rankCounts.values()).filter(count => count === 2);
@@ -1335,10 +1360,10 @@ export default class PokerTable {
         }
 
         // ワンペア
-        const isOnePair = (cards: Array<Card>) => {
+        const isOnePair = (cards: Array<Card | undefined>) => {
             const rankCounts = new Map();
             cards.forEach(card => {
-                rankCounts.set(card.rank, (rankCounts.get(card.rank) || 0) + 1);
+                rankCounts.set(card?.rank, (rankCounts.get(card?.rank) || 0) + 1);
             });
 
             // 同じ数は２だけのものを取得し、ペアが１つだけ（ワンペア）かどうか判定する
@@ -1525,7 +1550,7 @@ export default class PokerTable {
         for (let player of this.players) {
             if (player.playerType === 'ai') {
                 for (let card of player.hand) {
-                    this.animateCardOpen(card);
+                    this.animateCardOpen(card!);
                 }
             }
         };
@@ -1827,7 +1852,7 @@ export default class PokerTable {
     async animatePlayerHandOpen(player: PokerPlayer | PokerAI) {
         for (let card of player.hand) {
             await this.delay(0.7);
-            card.tweenFlip();
+            card?.tweenFlip();
             this.sounds.cardFlip.play();
         };
     }
@@ -1873,6 +1898,44 @@ export default class PokerTable {
                 player.handRank = 0;
             }
         }
+    }
+
+    // modal
+    createModalBet(player: PokerPlayer | PokerAI, container: Phaser.GameObjects.Container): ViewBet | undefined {
+
+        if (player instanceof PokerPlayer) {
+            const viewBet = new ViewBet(this.scene, player, container);
+            viewBet.create();
+            viewBet.hide();
+            return viewBet;
+        }
+        return undefined;
+    }
+
+
+    async showBetModal() {
+
+        if (this.getCurrentPlayer() instanceof PokerPlayer) {
+            this.modalBackground.setVisible(true);
+            this.viewBet?.show();
+
+            await new Promise<void>((resolve) => {
+
+                this.viewBet?.dealButton.on('pointerdown', () => {
+                    this.hideBetModal();
+                    resolve();
+                })
+
+            })
+
+        }
+
+    }
+
+    hideBetModal() {
+        this.viewBet?.hide();
+        this.modalBackground.setVisible(false);
+
     }
 
 

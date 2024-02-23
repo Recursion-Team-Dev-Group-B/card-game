@@ -25,6 +25,19 @@ class LoadingScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('button', '/game/common/button/button.png');
+    // chips
+    this.load.image('chipBlack', '/game/common/chip/chipBlack.png');
+    this.load.image('chipBlue', '/game/common/chip/chipBlue.png');
+    this.load.image('chipBrown', '/game/common/chip/chipBrown.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipGray', '/game/common/chip/chipGray.png');
+    this.load.image('chipGreen', '/game/common/chip/chipGreen.png');
+    this.load.image('chipOrange', '/game/common/chip/chipOrange.png');
+    this.load.image('chipPink', '/game/common/chip/chipPink.png');
+    this.load.image('chipPurple', '/game/common/chip/chipPurple.png');
+    this.load.image('chipRed', '/game/common/chip/chipRed.png');
+    this.load.image('chipYellow', '/game/common/chip/chipYellow.png');
     // button
     this.load.image('button_home', '/game/common/button/home_button.png');
     // sound

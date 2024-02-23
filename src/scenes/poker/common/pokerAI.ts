@@ -1,10 +1,9 @@
 import Player from '@/scenes/poker/common/player';
-import Card from "@/scenes/poker/common/card";
+//import Card from "@/scenes/poker/common/Card";
 import { callExpression } from '@babel/types';
 
 export default class PokerAI extends Player {
 
-    public hand: Array<Card> = [];
     public dealer: boolean;
     public handRank: number;
     public isActive: boolean;

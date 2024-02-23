@@ -6,8 +6,6 @@ import Card from '@/scenes/poker/refactoring/Card';
 class Deck {
   cardList: Array<Card> = [];
 
-  // 捨て札
-  discardList: Array<Card | undefined> = [];
 
   constructor(scene: Phaser.Scene) {
     // suitListを作り、GAME.CARD.SUIT_LISTの中身をコピー
@@ -62,6 +60,14 @@ class Deck {
     return this.cardList.length;
   }
 
+  ///
+  clearDeck(): void {
+    this.cardList = [];
+  }
+
+  addCard(card: Card) {
+    this.cardList.push(card);
+  }
 
 }
 

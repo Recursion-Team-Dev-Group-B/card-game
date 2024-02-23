@@ -372,4 +372,22 @@ export default class ContainerHelper {
 
         return [modalBackground, modalTextGameOver, modalTextLinkHome];
     }
+
+    createModalBet() {
+        const modalContainer = this.scene.add.container(0, 0);
+
+        const modalBackground = this.scene.add.rectangle(
+            0,
+            0,
+            this.scene.cameras.main.width,
+            this.scene.cameras.main.height,
+            0x000000,
+            0.9).setOrigin(0, 0);
+        modalBackground.setVisible(false);
+
+        modalContainer.add(modalBackground);
+        modalContainer.setData('background', modalBackground);
+        this.scene.add.existing(modalContainer);
+        return modalContainer;
+    }
 }
