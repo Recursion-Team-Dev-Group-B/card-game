@@ -1,13 +1,11 @@
 /* eslint no-underscore-dangle: 0 */
 import * as Phaser from 'phaser';
 import GAME from '@/constants/game';
-import Card from '@/scenes/poker/refactoring/Card';
+import Card from '@/scenes/poker/common/Card';
 
 class Deck {
   cardList: Array<Card> = [];
 
-  // 捨て札
-  discardList: Array<Card | undefined> = [];
 
   constructor(scene: Phaser.Scene) {
     // suitListを作り、GAME.CARD.SUIT_LISTの中身をコピー
@@ -62,6 +60,14 @@ class Deck {
     return this.cardList.length;
   }
 
+  ///
+  clearDeck(): void {
+    this.cardList = [];
+  }
+
+  addCard(card: Card) {
+    this.cardList.push(card);
+  }
 
 }
 

@@ -74,8 +74,6 @@ export default class Card extends Phaser.GameObjects.Image {
     this.faceDown = true;
   }
 
-
-
   tweenFlip() {
     this.scene.tweens.add({
       targets: this,

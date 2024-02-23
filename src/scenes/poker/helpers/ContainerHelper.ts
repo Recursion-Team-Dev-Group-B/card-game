@@ -345,15 +345,17 @@ export default class ContainerHelper {
     }
 
     createModal() {
+        const modalContainer = this.scene.add.container(0, 0);
+
         const modalBackground = this.scene.add.rectangle(
             0,
             0,
             this.scene.cameras.main.width,
             this.scene.cameras.main.height,
             0x000000,
-            0.5).setOrigin(0, 0).setInteractive();
+            0.9).setOrigin(0, 0);
         modalBackground.setVisible(false);
-
+        /*
         const modalTextGameOver = this.scene.add.text(
             this.scene.cameras.main.centerX,
             this.scene.cameras.main.centerY - 100,
@@ -369,7 +371,11 @@ export default class ContainerHelper {
         ).setOrigin(0.5);
         modalTextLinkHome.setFontSize(commonConfig.text.fontSize.modal - 10);
         modalTextLinkHome.visible = false;
+        */
 
-        return [modalBackground, modalTextGameOver, modalTextLinkHome];
+        modalContainer.add(modalBackground);
+        modalContainer.setData('background', modalBackground);
+        this.scene.add.existing(modalContainer);
+        return modalContainer;
     }
 }

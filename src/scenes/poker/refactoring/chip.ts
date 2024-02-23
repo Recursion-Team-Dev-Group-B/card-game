@@ -45,7 +45,7 @@ class Chip extends Phaser.GameObjects.Image {
         Phaser.Display.Align.In.Center(this.GOText, this);
         this.setDisplaySize(120, 100);
 
-        this.clickSound = this.scene.sound.add("clickChip", {
+        this.clickSound = this.scene.sound.add("sound_click", {
             volume: 1
         });
 

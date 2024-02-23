@@ -1,9 +1,9 @@
 import Player from '@/scenes/poker/common/player';
-import Card from "@/scenes/poker/common/card";
+//import Card from "@/scenes/poker/common/card";
+import Card from "@/scenes/poker/refactoring/Card";
 
 export default class PokerPlayer extends Player {
 
-    public hand: Array<Card> = [];
     public dealer: boolean;
     public handRank: number;
     public isActive: boolean;
