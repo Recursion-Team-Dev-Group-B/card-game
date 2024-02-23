@@ -111,7 +111,7 @@ export default class PokerTable {
         }
         this.sounds = this.createSounds();
         this.isGameOver = false;
-        this.modalContainer = this.containerHelper.createModal();
+        this.modalContainer = this.containerHelper.createModalBet();
         this.modalBackground = this.modalContainer.getData('background');
         this.viewBet = this.createViewBet();
         this.isShowModalBet = false;
