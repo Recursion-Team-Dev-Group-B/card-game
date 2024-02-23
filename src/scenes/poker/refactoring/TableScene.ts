@@ -1,8 +1,8 @@
-import BaseScene from '@/scenes/poker/refactoring/BaseScene';
 import Card from '@/scenes/poker/refactoring/Card';
 import Deck from '@/scenes/poker/refactoring/Deck';
 import Player from '@/scenes/poker/refactoring/Player';
 import { string } from 'prop-types';
+import BaseScene from '@/scenes/poker/refactoring/BaseScene';
 
 
 
