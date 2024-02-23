@@ -1,4 +1,4 @@
-import Card from './card';
+import Card from '@/scenes/poker/refactoring/Card';
 
 export default abstract class Player {
   /*
