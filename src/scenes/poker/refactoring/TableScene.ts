@@ -155,7 +155,7 @@ class TableScene extends BaseScene {
     }
 
 
-    
+
 }
 
 export default TableScene;
